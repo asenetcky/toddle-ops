@@ -1,7 +1,9 @@
 
 # Capstone Project
 
-This is my capstone project for the [Agents Intensive - Capstone Project](https://www.kaggle.com/competitions/agents-intensive-capstone-project)
+This is my capstone project for the [Agents Intensive - Capstone Project](https://www.kaggle.com/competitions/agents-intensive-capstone-project).
+
+[5-Day AI Agents Intensive Course with Google Course Page](https://www.kaggle.com/learn-guide/5-day-agents)
 
 ## Description
 
