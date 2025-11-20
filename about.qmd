@@ -1,0 +1,6 @@
+---
+title: About
+title-block-banner: true
+---
+
+This is a template quarto website :)

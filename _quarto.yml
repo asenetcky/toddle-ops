@@ -1,0 +1,41 @@
+project:
+  type: website
+  output-dir: docs
+
+execute:
+  freeze: auto
+
+website:
+  title: "Template Website"
+  navbar:
+    title: "Template Website"
+    right:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - text: Contact
+        menu:
+          - icon: linkedin
+            text: Linkedin
+            href: https://www.linkedin.com/in/alexander-senetcky-0b209822
+            target: _blank
+          - icon: envelope
+            text: Email
+            href: mailto:me@asenetcky.dev
+      - icon: github
+        href: https://github.com/asenetcky
+        target: _blank
+  page-footer:
+    left: © 2025 Alexander Senetcky
+    right: This website is built with [Quarto]("https://quarto.org/") and [GitHub]("https://github.com")
+  draft-mode: unlinked
+
+  repo-url: https://github.com/asenetcky/quarto-website-template
+  repo-actions: [edit, source, issue]
+
+format:
+  html:
+    page-layout: full
+    theme: yeti
+    css: styles.css
+    toc: true

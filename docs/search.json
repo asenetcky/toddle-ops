@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "quarto-document.html",
+    "href": "quarto-document.html",
+    "title": "Title",
+    "section": "",
+    "text": "Poignant Quote"
+  },
+  {
+    "objectID": "quarto-document.html#goal",
+    "href": "quarto-document.html#goal",
+    "title": "Title",
+    "section": "Goal",
+    "text": "Goal"
+  },
+  {
+    "objectID": "quarto-document.html#the-setup",
+    "href": "quarto-document.html#the-setup",
+    "title": "Title",
+    "section": "The Setup",
+    "text": "The Setup"
+  },
+  {
+    "objectID": "quarto-document.html#the-challenge",
+    "href": "quarto-document.html#the-challenge",
+    "title": "Title",
+    "section": "The Challenge",
+    "text": "The Challenge"
+  },
+  {
+    "objectID": "quarto-document.html#the-solution",
+    "href": "quarto-document.html#the-solution",
+    "title": "Title",
+    "section": "The Solution",
+    "text": "The Solution"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This is a template quarto website :)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Template Landing Page",
+    "section": "",
+    "text": "Welcome to my quarto template!"
+  }
+]

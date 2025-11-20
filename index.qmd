@@ -1,0 +1,7 @@
+---
+title: Template Landing Page
+toc: false
+---
+
+
+> Welcome to my quarto template!
