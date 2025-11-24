@@ -1,11 +1,12 @@
-from google.adk.agents import LlmAgent, SequentialAgent, LoopAgent
+from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.models.google_llm import Gemini
-from google.adk.tools import AgentTool, google_search, FunctionTool
+from google.adk.tools import AgentTool, FunctionTool
 
 import toddle_ops.craft_research_team.agent as craft
 from toddle_ops.config.basic import retry_config
 
 # Quality Assurance Loop
+
 
 ## helper functions
 def exit_loop():
@@ -16,6 +17,7 @@ def exit_loop():
         "status": "approved",
         "message": "Project approved. Exiting Quality Assurance loop.",
     }
+
 
 ## Agents
 initial_project_research = LlmAgent(
@@ -64,16 +66,13 @@ safety_report_agent = LlmAgent(
     - Otherwise, provide 2-3 specific, actionable suggestions for
     improving safety.
     """,
-    #tools=[google_search],
+    # tools=[google_search],
     output_key="safety_report",
 )
 
 safety_critic_agent = LlmAgent(
     name="SafetyCriticAgent",
-    model=Gemini(
-        model="gemini-2.5-flash-lite",
-        retry_options=retry_config
-    ),
+    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction="""You are a project toddler safety specialist. You have a 
     draft toddler project and safety report.
     
@@ -86,9 +85,9 @@ safety_critic_agent = LlmAgent(
     from the report.""",
     output_key="current_project",  # It overwrites the project with the new, safer version.
     tools=[
-       # google_search,
+        # google_search,
         FunctionTool(exit_loop)
-    ],  
+    ],
 )
 
 
@@ -120,8 +119,6 @@ safety_critic_agent = LlmAgent(
 # response = await runner.run_debug(
 #     "Please provide me with a random toddler project :)"
 # )
-
-
 
 
 clarity_editor = LlmAgent(
