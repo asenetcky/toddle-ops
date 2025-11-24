@@ -1,4 +1,4 @@
-from google.adk.agents import LlmAgent, SequentialAgent
+from google.adk.agents import LlmAgent, SequentialAgent, LoopAgent
 from google.adk.models.google_llm import Gemini
 from google.adk.tools import AgentTool, google_search, FunctionTool
 
@@ -48,8 +48,8 @@ initial_project_research = LlmAgent(
     output_key="current_project",
 )
 
-safety_assurance = LlmAgent(
-    name="SafetyAssuranceAgent",
+safety_report_agent = LlmAgent(
+    name="SafetyReportAgent",
     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction="""You are an expert at assessing toddler safety.
 
@@ -66,8 +66,8 @@ safety_assurance = LlmAgent(
     output_key="safety_report",
 )
 
-safety_agent = LlmAgent(
-    name="SafetyAgent",
+safety_critic_agent = LlmAgent(
+    name="SafetyCriticAgent",
     model=Gemini(
         model="gemini-2.5-flash-lite",
         retry_options=retry_config
@@ -75,8 +75,8 @@ safety_agent = LlmAgent(
     instruction="""You are a project toddler safety specialist. You have a 
     draft toddler project and safety report.
     
-    Draft Project: {current_story}
-    Safety Report: {critique}
+    Draft Project: {current_project}
+    Safety Report: {safety_report}
     
     Your task is to analyze the Safety Report.
     - IF the report is EXACTLY "APPROVED", you MUST call the `exit_loop` function and nothing else.
@@ -89,6 +89,12 @@ safety_agent = LlmAgent(
     ],  
 )
 
+
+safety_loop = LoopAgent(
+    name="SafetyLoop",
+    sub_agents=[safety_report_agent,safety_critic_agent],
+    max_ierations=2,
+)
 
 
 
