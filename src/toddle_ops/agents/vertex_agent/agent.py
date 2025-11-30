@@ -1,9 +1,9 @@
 import os
 from dotenv import load_dotenv
 
-from google.adk.apps.app import App
+from google.adk.agents import LlmAgent
 
-from toddle_ops.agents.root_agent.agent import root_agent
+import toddle_ops.agents.root_agent.agent as root
 from toddle_ops.config.basic import events_compaction_config
 from google.adk.plugins.logging_plugin import LoggingPlugin
 import vertexai
@@ -18,16 +18,4 @@ try:
 except Exception as e:
     print(f"Auth error: Details: {e}")
 
-
-APP_NAME = "default"  # Application
-USER_ID = "default"  # User
-SESSION = "default"  # Session
-
-MODEL_NAME = "gemini-2.5-flash-lite"
-
-adk_app = App(
-    name=APP_NAME,
-    root_agent=root_agent,
-    events_compaction_config=events_compaction_config,
-    plugins=[LoggingPlugin()],
-)
+root_agent = root.root_agent
