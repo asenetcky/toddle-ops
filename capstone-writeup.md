@@ -56,10 +56,30 @@ preload.
 
 ## Tools
 
+- **google_search** - built-in google search for project research
+- **AgentTools**
+- **SubAgents**
+- **FunctionTools**
 
 
-workflow
+### Work in Progress Tooling
+- **sqlite mcp server** - Implementing for storing projects in a structured 
+format.
+
+## Workflow
+
+1. **Prompted by User**: If user provides details about what kind of project
+wanted, forward that context on onward, regardless, begin to engage *step2*.
+2. **Use `ToddleOpsSequence` tool**
+3. **Research and Project Synthesizing** Step
+    - Parallel research of art and science projects
+    - Project Synthesizer combines/picks best project
+4. **Quality Assurance**
+    - Check for Safety
+    - Edit for grammar and clarity
+    - Return project in a standard format to `ToddleOpsRoot`
+3. **Project Returned to User**: They can ask for more - or with the 
+session and memory services - prompt the agent about past projects as well.
 
 ## Attachments
-
-links to code etc...
+Repo: [asenetcky/toddle-ops](https://github.com/asenetcky/toddle-ops)
