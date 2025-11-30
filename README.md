@@ -27,6 +27,32 @@ easy to follow format so *all* you have to do is conjure up every last drop
 of willpower in your tired, aching body to actually *do* the project!
 
 
+## Setup
+
+### Dependencies
+
+- uv
+- gcloud for Vertex
+
+1. Installing `uv`
+
+Please refer to [astral's website for up-to-date installation instructions.](https://docs.astral.sh/uv/getting-started/installation/)
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Clone repo and setup python
+
+This project has a `uv.lock` and `pyproject.toml` so users can easily
+setup their environment with `uv`.
+
+```bash
+git clone https://github.com/asenetcky/toddle-ops
+cd toddle-ops
+uv sync
+```
+
 ## Usage
 
 **uv**

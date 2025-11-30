@@ -1,7 +1,63 @@
 ---
-title: Template Landing Page
+title: ToddleOps
 toc: false
 ---
 
 
-> Welcome to my quarto template!
+> Welcome to my website for my for Google x Kaggle 5 day Agent Intensive 
+> Course Capstone Project
+
+
+## Project Description
+
+Keeping a toddler happily occupied is a fulltime job, and the odds are, you 
+already have a fulltime job. Sprinkle in some sleep depravation, and your
+little one is likely to miss out on enriching activities.
+
+> Enter ToddleOps Project Generation Agent
+
+Lower the barrier of entry to safe, fun toddler activities to the absolute
+floor with the ToddleOps Agent. It will provide projects, in a standard,
+easy to follow format so *all* you have to do is conjure up every last drop
+of willpower in your tired, aching body to actually *do* the project!
+
+## Setup and Usage
+
+### Dependencies
+
+- uv
+- gcloud for Vertex
+
+1. Installing `uv`
+
+Please refer to [astral's website for up-to-date installation instructions.](https://docs.astral.sh/uv/getting-started/installation/)
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Clone repo and setup python
+
+This project has a `uv.lock` and `pyproject.toml` so users can easily
+setup their environment with `uv`.
+
+```bash
+git clone https://github.com/asenetcky/toddle-ops
+cd toddle-ops
+uv sync
+```
+
+## Usage
+
+**uv**
+
+This will run the agent wrapped in an app with logging, and local session and 
+memory services.
+
+```bash
+uv run ./src/toddle_ops/local_app/main.py
+```
+
+### Example Project Output
+
+![image of terminal output describing a project for toddlers.](images/example-project.png "Toddle Ops Output")
