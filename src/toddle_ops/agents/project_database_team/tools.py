@@ -6,7 +6,6 @@ from typing import List, Optional
 from enum import Enum
 
 from toddle_ops.models.projects import Project, Difficulty
-from google.adk.tools.tool_context import ToolContext
 
 DATABASE_FILE = Path("toddle_ops_projects.db")
 

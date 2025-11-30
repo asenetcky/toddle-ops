@@ -1,10 +1,16 @@
 from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
 
 
 async def run_session(
     runner_instance: Runner,
+    session_service: InMemorySessionService,
     user_queries: list[str] | str = None,
     session_name: str = "default",
+    app_name: str = "default",
+    user_id: str = "default",
+    model_name: str = "gemini-2.5-flash-lite",
 ):
     print(f"\n ### Session: {session_name}")
 
@@ -14,17 +20,17 @@ async def run_session(
     # Attempt to create a new session or retrieve an existing one
     try:
         session = await session_service.create_session(
-            app_name=app_name, user_id=USER_ID, session_id=session_name
+            app_name=app_name, user_id=user_id, session_id=session_name
         )
-    except:
+    except:  # noqa: E722
         session = await session_service.get_session(
-            app_name=app_name, user_id=USER_ID, session_id=session_name
+            app_name=app_name, user_id=user_id, session_id=session_name
         )
 
     # Process queries if provided
     if user_queries:
         # Convert single query to list for uniform processing
-        if type(user_queries) == str:
+        if type(user_queries) == str:  # noqa: E721
             user_queries = [user_queries]
 
         # Process each query in the list sequentially
@@ -36,7 +42,7 @@ async def run_session(
 
             # Stream the agent's response asynchronously
             async for event in runner_instance.run_async(
-                user_id=USER_ID, session_id=session.id, new_message=query
+                user_id=user_id, session_id=session.id, new_message=query
             ):
                 # Check if the event contains valid content
                 if event.content and event.content.parts:
@@ -45,6 +51,6 @@ async def run_session(
                         event.content.parts[0].text != "None"
                         and event.content.parts[0].text
                     ):
-                        print(f"{MODEL_NAME} > ", event.content.parts[0].text)
+                        print(f"{model_name} > ", event.content.parts[0].text)
     else:
         print("No queries!")
