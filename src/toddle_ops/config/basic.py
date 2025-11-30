@@ -12,3 +12,14 @@ events_compaction_config = EventsCompactionConfig(
     compaction_interval=3,
     overlap_size=1,
 )
+
+# basic eval criteria
+# perfect tool trajectory is expected
+# text should match - but the nature of random projects means
+# this can be more lax
+eval_config = {
+    "criteria": {
+        "tool_trajectory_avg_score": 1.0,  
+        "response_match_score": 0.2, 
+    }
+}
