@@ -5,7 +5,6 @@ from google.adk.runners import InMemoryRunner
 
 from toddle_ops.services.sessions import session_service
 from toddle_ops.services.memory import memory_service
-from toddle_ops.services.callbacks import auto_save_to_memory
 from toddle_ops.agents.root_agent.agent import root_agent
 
 load_dotenv()
