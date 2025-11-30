@@ -6,15 +6,19 @@ execute:
   freeze: auto
 
 website:
-  title: "Template Website"
+  title: "ToddleOps"
   navbar:
-    title: "Template Website"
+    title: "ToddleOps Agentic Project Generation"
     right:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: capstone-info.qmd
+        text: "Capstone Description"
       - text: Contact
         menu:
+          - icon: "box-arrow-up-right"
+            text: Personal Website
+            href: https://www.asenetcky.dev
           - icon: linkedin
             text: Linkedin
             href: https://www.linkedin.com/in/alexander-senetcky
@@ -22,6 +26,9 @@ website:
           - icon: envelope
             text: Email
             href: mailto:me@asenetcky.dev
+          - text: My ORCID
+            href: https://orcid.org/0009-0009-3730-5397
+            icon: "box-arrow-up-right"
       - icon: github
         href: https://github.com/asenetcky
         target: _blank
@@ -30,7 +37,7 @@ website:
     right: This website is built with [Quarto]("https://quarto.org/") and [GitHub]("https://github.com")
   draft-mode: unlinked
 
-  repo-url: https://github.com/asenetcky/quarto-website-template
+  repo-url: https://github.com/asenetcky/toddle-ops
   repo-actions: [edit, source, issue]
 
 format:

@@ -15,24 +15,79 @@ their little ones.
 
 ## The Pitch
 
-- TODO - just spitballing
-- problem/solution/value
-    - hard to come up with projects on a whim
-    - static content: 
-        - doesn't know what materials we have on hand
-        - doesn't know what projects we've done already
-        - has alot of fluff 
-- quick projects
-- clear consistant formatting everytime
-- memory and database
+Keeping a toddler happily occupied is a fulltime job, and the odds are, you 
+already have a fulltime job. Sprinkle in some sleep depravation, and your
+little one is likely to miss out on enriching activities.
+
+> Enter ToddleOps Project Generation Agent
+
+Lower the barrier of entry to safe, fun toddler activities to the absolute
+floor with the ToddleOps Agent. It will provide projects, in a standard,
+easy to follow format so *all* you have to do is conjure up every last drop
+of willpower in your tired, aching body to actually *do* the project!
+
+
+## Setup
+
+### Dependencies
+
+- uv
+- gcloud for Vertex
+
+1. Installing `uv`
+
+Please refer to [astral's website for up-to-date installation instructions.](https://docs.astral.sh/uv/getting-started/installation/)
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Clone repo and setup python
+
+This project has a `uv.lock` and `pyproject.toml` so users can easily
+setup their environment with `uv`.
+
+```bash
+git clone https://github.com/asenetcky/toddle-ops
+cd toddle-ops
+uv sync
+```
 
 ## Usage
 
+**uv**
+
+This will run the agent wrapped in an app with logging, and local session and 
+memory services.
+
 ```bash
-adk run src/toddle_ops/app/
+uv run ./src/toddle_ops/local_app/main.py
 ```
 
+**adk cli**
+
+This will run the agent.
+
+```bash
+adk run src/toddle_ops/agents/root_agent
+```
+
+### Example Project Output
+
+![image of terminal output describing a project for toddlers.](images/example-project.png "Toddle Ops Output")
+
+
+### MCP Servers in Use
+
+Implementation is not quite finished - but local project storage is planned
+for the future.
+- [sqlite mcp server](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite)
+
 ### Vertex App
+
+## Setup
+
+Install [gcloud](https://docs.cloud.google.com/sdk/docs/install-sdk#rpm)
 
 **Deployment**
 
@@ -41,10 +96,3 @@ cd ./src/toddle_ops/agents/
 adk deploy agent_engine --project=$GOOGLE_PROJECT_ID --region=$DEPLOYED_REGION vertex_agent --agent_engine_config_file=vertex_agent/.agent_engine_config.json
 ```
 
-### MCP
-
-- [sqlite mcp server](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite)
-
-## Setup
-
-Install [gcloud](https://docs.cloud.google.com/sdk/docs/install-sdk#rpm)
