@@ -45,3 +45,6 @@ adk deploy agent_engine --project=$GOOGLE_PROJECT_ID --region=$DEPLOYED_REGION v
 
 - [sqlite mcp server](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite)
 
+## Setup
+
+Install [gcloud](https://docs.cloud.google.com/sdk/docs/install-sdk#rpm)

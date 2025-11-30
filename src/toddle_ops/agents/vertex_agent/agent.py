@@ -9,6 +9,7 @@ from google.adk.plugins.logging_plugin import LoggingPlugin
 import vertexai
 
 # Load environment variables from .env
+
 try:
     load_dotenv()
     vertexai.init(
