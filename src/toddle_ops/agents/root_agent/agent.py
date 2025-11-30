@@ -44,5 +44,5 @@ root_agent = LlmAgent(
         preload_memory,
     ],
     output_key="project_request",
-    after_agent_callback=auto_save_to_memory # save after each turn
+    after_agent_callback=auto_save_to_memory,  # save after each turn
 )
