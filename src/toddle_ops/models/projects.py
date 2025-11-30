@@ -21,12 +21,12 @@ class Material(BaseModel):
     units: str | None = Field(None, description="The units of the material.")
 
 
-#Keeping it simple strings for now - crunch time for  deadline
+# Keeping it simple strings for now - crunch time for  deadline
 # TODO ensue the components of Project are database friendly
 class Project(BaseModel):
     """A craft project for toddlers."""
 
-    # UUID is is causing issues with the db 
+    # UUID is is causing issues with the db
     # project_id: uuid.UUID = Field(default_factory=uuid.uuid4)
     name: str = Field(..., description="The name of the project.")
     description: str = Field(..., description="A brief description of the project.")
@@ -34,10 +34,10 @@ class Project(BaseModel):
     duration_minutes: int = Field(
         ..., description="The estimated duration of the project in minutes."
     )
-    materials: str = Field(#List[Material] = Field(
+    materials: str = Field(  # List[Material] = Field(
         ..., description="A list of materials required for the project."
     )
-    instructions: str = Field(#List[str] = Field(
+    instructions: str = Field(  # List[str] = Field(
         ..., description="A list of instructions for the project."
     )
 

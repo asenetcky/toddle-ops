@@ -192,6 +192,7 @@ def list_projects() -> List[Project]:
         for row in rows
     ]
 
+
 # add this in eventually
 # tool_context: ToolContext
 def ask_user_permission(summary: str) -> str:
@@ -209,5 +210,3 @@ def ask_user_permission(summary: str) -> str:
     if choice in ("y", "yes", ""):
         return "yes"
     return "no"
-
-

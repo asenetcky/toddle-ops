@@ -1,5 +1,6 @@
 from google.adk.runners import Runner
 
+
 async def run_session(
     runner_instance: Runner,
     user_queries: list[str] | str = None,
