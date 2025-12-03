@@ -26,9 +26,7 @@ runner = Runner(
 
 async def main():
     try:
-        _response = await runner.run_debug(
-             "Please provide a project."
-        )
+        _response = await runner.run_debug("Please provide a project.")
     except Exception as e:
         print(f"An error occurred during toddle ops execution: {e}")
 
