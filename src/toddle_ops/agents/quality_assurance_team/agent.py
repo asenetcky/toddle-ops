@@ -1,6 +1,7 @@
 from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent
 from google.adk.models.google_llm import Gemini
 from google.adk.tools import FunctionTool
+from google.adk.models.lite_llm import LiteLlm
 
 from toddle_ops.config import retry_config
 from toddle_ops.models.projects import SafetyReport
@@ -68,7 +69,7 @@ safety_refinement_loop = LoopAgent(
 ### editor loop
 editorial_agent = LlmAgent(
     name="EditorialAgent",
-    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+    model=LiteLlm(model="ollama_chat/qwen3:30b", retry_options=retry_config),
     instruction="""You are an expert editor and proofreader.
 
     Review the following project for clarity, age-appropriateness, spelling, and grammar.
