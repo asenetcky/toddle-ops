@@ -46,10 +46,10 @@ root_agent = LlmAgent(
 # #     events_compaction_config=events_compaction_config
 # # )
 
-# from google.adk.runners import Runner
-# from toddle_ops.services.memory import memory_service
-# from toddle_ops.services.sessions import session_service
+from google.adk.runners import Runner
+from toddle_ops.services.memory import memory_service
+from toddle_ops.services.sessions import session_service
 
-# runrun = Runner(agent=root_agent, app_name="my app", session_service=session_service, memory_service=memory_service)
+runrun = Runner(agent=root_agent, app_name="my app", session_service=session_service, memory_service=memory_service)
 
-# await runrun.run_debug("I would like a project.")
+await runrun.run_debug("I would like an art project.")
