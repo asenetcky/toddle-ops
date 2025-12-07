@@ -2,9 +2,9 @@ import uuid
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, Relationship
+from pydantic import BaseModel
 
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Field, Relationship
 
 
 class Difficulty(str, Enum):
