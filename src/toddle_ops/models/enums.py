@@ -7,5 +7,5 @@ class Status(str, Enum):
 
     APPROVED = "approved"
     PENDING = "pending"
-    REVISION_NEEDED = "revision needed"
+    REVISION_NEEDED = "revision_needed"
     REJECTED = "rejected"
