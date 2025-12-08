@@ -1,29 +1,9 @@
-import uuid
 from enum import Enum
 from typing import List, Optional
 
 from pydantic import BaseModel
 
 from sqlmodel import SQLModel, Field, Relationship
-
-
-class Difficulty(str, Enum):
-    """The difficulty of the project."""
-
-    EASY = "easy"
-    MEDIUM = "medium"
-    HARD = "hard"
-
-
-class Material(SQLModel, table=True):
-    """A material required for a project."""
-
-    id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(index=True, description="The name of the material.")
-    quantity: float = Field(description="The quantity of the material.")
-    units: str | None = Field(default=None, description="The units of the material.")
-
-    projects: List["Project"] = Relationship(back_populates="materials")
 
 
 class Project(SQLModel, table=True):
@@ -37,8 +17,22 @@ class Project(SQLModel, table=True):
     )
     instructions: str = Field(description="A list of instructions for the project.")
 
-    materials: list["Material"] = Relationship(back_populates="projects")
-    materials_id: Optional[int] = Field(default=None, foreign_key="material.id")
+    materials: list["Material"] = Relationship(back_populates="project")
+
+
+# materials_id: Optional[int] = Field(default=None, foreign_key="material.id")
+
+
+class Material(SQLModel, table=True):
+    """A material required for a project."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(index=True, description="The name of the material.")
+    quantity: float = Field(description="The quantity of the material.")
+    units: str | None = Field(default=None, description="The units of the material.")
+
+    project_id: int | None = Field(default=None, foreign_key="project.id")
+    project: Project | None = Relationship(back_populates="materials")
 
 
 class SafetyStatus(str, Enum):
