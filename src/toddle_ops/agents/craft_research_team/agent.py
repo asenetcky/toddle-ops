@@ -1,10 +1,8 @@
-from google.adk.agents import LlmAgent, ParallelAgent, SequentialAgent
+from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.models.google_llm import Gemini
 from google.adk.tools import google_search
-from google.adk.models.lite_llm import LiteLlm
 
 from toddle_ops.config import retry_config
-from toddle_ops.models.projects import Project
 
 project_researcher = LlmAgent(
     name="ProjectResearcher",
@@ -71,7 +69,6 @@ project_synthesizer = LlmAgent(
         3. Encourage your little one to try different shapes and sizes.
 
     """,
-    # output_schema=Project,
     output_key="standard_project",
 )
 

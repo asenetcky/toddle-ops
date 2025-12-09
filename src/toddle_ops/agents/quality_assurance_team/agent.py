@@ -1,10 +1,8 @@
 from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent
 from google.adk.models.google_llm import Gemini
 from google.adk.tools import FunctionTool
-from google.adk.models.lite_llm import LiteLlm
 
 from toddle_ops.config import retry_config
-from toddle_ops.models.projects import SafetyReport
 from toddle_ops.helpers import exit_loop
 from toddle_ops.models.actions import ActionReport
 
@@ -29,6 +27,8 @@ safety_critic_agent = LlmAgent(
     output_schema=ActionReport,
     output_key="safety_report",
 )
+
+# todo: implement tool that consumes ActionReport with logic based around status.
 
 safety_refiner_agent = LlmAgent(
     name="SafetyRefinerAgent",
