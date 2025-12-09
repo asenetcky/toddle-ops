@@ -3,6 +3,7 @@ from google.adk.models.google_llm import Gemini
 from google.adk.tools import google_search
 
 from toddle_ops.config import retry_config
+from toddle_ops.models.projects import StandardProject
 
 project_researcher = LlmAgent(
     name="ProjectResearcher",
@@ -34,41 +35,9 @@ project_synthesizer = LlmAgent(
 
     Research Outputs: {project_research}
 
-    There should be no extra categories or preamble or comments before or 
-    after the instructions.
-
-    Format should look like the following:
-    
-    - **Name:** The name of the project
-
-    - **Description:** A brief 2-3 sentence description of the project
-
-    - **Duration:** The estimated duration of the project in minutes
-
-    - **Materials:** A bulleted list of materials required for the project
-
-    - **Instructions:** A numbered list of step-by-step instructions for the project
-
-    Here is an example output:
-
-    - **Name:** Toddler Paper Craft
-
-    - **Description:** Spark curiosity by cutting out paper craft animals
-        with safety scissors.
-
-    - **Duration:** 20 minutes
-
-    - **Materials:**
-        - Safety Scissors
-        - Craft Paper
-        - Crayons
-
-    - **Instructions:** 
-        1. Draw and color forest critters with crayons on the craft paper.
-        2. Help your toddler cut out the critters with safety scissors.
-        3. Encourage your little one to try different shapes and sizes.
-
+    Your output MUST be a `StandardProject` object.
     """,
+    output_schema=StandardProject,
     output_key="standard_project",
 )
 

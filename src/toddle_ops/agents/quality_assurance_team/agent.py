@@ -45,9 +45,9 @@ safety_refiner_agent = LlmAgent(
     Your task is to analyze the Safety Report.
     - IF the safety_report's status is 'APPROVED', you MUST call the `exit_loop` function and nothing else.
     - OTHERWISE, rewrite the draft project to fully incorporate the feedback 
-        from the report.""",
+        from the report.
+    Your output MUST be a `StandardProject` object.""",
     output_key="standard_project",  # It overwrites the project with the new, safer version.
-    input_schema=ActionReport,
     tools=[FunctionTool(exit_loop)],
 )
 
@@ -64,7 +64,12 @@ editorial_agent = LlmAgent(
     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction="""You are an expert editor and proofreader.
 
-    Review the following project for clarity, age-appropriateness, spelling, and grammar.
+    Review the following project:
+        {standard_project}
+
+    for the following:
+
+    - clarity, age-appropriateness, spelling, and grammar.
     - Projects are meant for children aged 1-3 years, accompanied by an adult.
     - Ensure the instructions are easy for a parent or caregiver to understand.
     - Correct all spelling and grammar mistakes.
@@ -72,7 +77,6 @@ editorial_agent = LlmAgent(
 
     The final output should only correct the project content, maintaining the original format.
 
-    **Project:** {standard_project}
     """,
     output_key="standard_project",
 )

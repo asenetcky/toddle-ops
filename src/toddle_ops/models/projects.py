@@ -6,6 +6,22 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, Relationship
 
 
+class StandardProject(SQLModel, table=True):
+    """A craft project for toddlers."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(index=True, description="The name of the project.")
+    description: str = Field(description="A brief description of the project.")
+    duration_minutes: int = Field(
+        description="The estimated duration of the project in minutes."
+    )
+    instructions: str = Field(
+        description="Numbered, step by step instructions for the project."
+    )
+
+    materials: str = Field(description="Bulleted list of materials")
+
+
 class Project(SQLModel, table=True):
     """A craft project for toddlers."""
 
@@ -33,21 +49,3 @@ class Material(SQLModel, table=True):
 
     project_id: int | None = Field(default=None, foreign_key="project.id")
     project: Project | None = Relationship(back_populates="materials")
-
-
-class SafetyStatus(str, Enum):
-    """The safety status of a project."""
-
-    APPROVED = "APPROVED"
-    NEEDS_REVISION = "NEEDS_REVISION"
-
-
-class SafetyReport(BaseModel):
-    """A safety report for a project."""
-
-    status: SafetyStatus = Field(..., description="The safety status of the project.")
-    suggestions: List[str] = Field(
-        default_factory=list,
-        description="Suggestions for improving safety if revision is needed.",
-    )
-    summary: str = Field(..., description="A concise summary of the safety assessment.")
