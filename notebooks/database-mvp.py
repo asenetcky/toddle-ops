@@ -131,28 +131,28 @@ def _(LiteLlm, LlmAgent):
 
     project_name_agent = LlmAgent(
         name="project_name_agent",
-        model=LiteLlm(model="ollama_chat/gemma3:1b"),
+        model=LiteLlm(model="ollama_chat/gemma3:270m"),
         instruction="""Return ONLY the name of the project as text in your response and NOTHING ELSE.""",
         output_key="project_name",
     )
 
     project_description_agent = LlmAgent(
         name="project_description_agent",
-        model=LiteLlm(model="ollama_chat/gemma3:1b"),
+        model=LiteLlm(model="ollama_chat/gemma3:4b"),
         instruction="""Return ONLY the description of the project in your response and NOTHING ELSE.""",
         output_key="project_description",
     )
 
     project_duration_agent = LlmAgent(
         name="project_duration_agent",
-        model=LiteLlm(model="ollama_chat/gemma3:1b"),
+        model=LiteLlm(model="ollama_chat/gemma3:270m"),
         instruction="""Return ONLY the duration of the project in minutes as an integer and NOTHING ELSE.""",
         output_key="project_duration",
     )
 
     project_instructions_agent = LlmAgent(
         name="project_instructions_agent",
-        model=LiteLlm(model="ollama_chat/gemma3:1b"),
+        model=LiteLlm(model="ollama_chat/gemma3:4b"),
         instruction="""Return ONLY the step by step instructions of the project as a single string and NOTHING ELSE.""",
         output_key="project_instructions",
     )
@@ -209,11 +209,71 @@ async def _(InMemoryRunner, parallel_parser):
         materials:
            2 Sheets of paper, crayons (assorted colors), glue stick, safety scissors. 
 
-        Convert this information into the ProjectBase and MaterialBase classes, and 
-        return a ProjectPackage object containing the project and its materials.
+        """
+    )
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md("""
+    okay that works pretty well - let's refine materials
+    """)
+    return
+
+
+@app.cell
+async def _(InMemoryRunner, LiteLlm, LlmAgent):
+    refined_material_agent = LlmAgent(
+        name="refined_material_agent",
+        model=LiteLlm(model="ollama_chat/gemma3:12b"),
+        instruction="""Return ONLY the materials, their count and/or units required for the project as list of strings (list[str]) in your response and NOTHING ELSE. """,
+        #output_schema=List[MaterialBase],
+        output_key="refined_materials",
+    )
+    _runner = InMemoryRunner(agent=refined_material_agent)
+    await _runner.run_debug(
+        """
+        You are given this this example project:
+
+        Name: Toddler Art Project
+        description: A simple art project for toddlers using basic materials.
+        duration (in minutes): 30
+        instructions: 1. Gather all materials. 2. Provide paper and crayons to the toddler. 
+            3. Encourage the toddler to draw freely. 4. Display the artwork proudly.
+        materials:
+           2 Sheets of paper, crayons (assorted colors), glue stick, safety scissors. 
 
         """
     )
+    return
+
+
+@app.cell
+async def _(InMemoryRunner, LiteLlm, LlmAgent):
+    refined_instruction_agent = LlmAgent(
+        name="refined_instruction_agent",
+        model=LiteLlm(model="ollama_chat/gemma3:12b"),
+        instruction="""Return ONLY the instructions required for the project as dictionary(dict[int, str]) where
+        the key is the step number and the value is the instruction string in your response and NOTHING ELSE. """,
+        output_key="refined_instructions",
+    )
+    _runner = InMemoryRunner(agent=refined_instruction_agent)
+    await _runner.run_debug(
+        """
+        You are given this this example project:
+
+        Name: Toddler Art Project
+        description: A simple art project for toddlers using basic materials.
+        duration (in minutes): 30
+        instructions: 1. Gather all materials. 2. Provide paper and crayons to the toddler. 
+            3. Encourage the toddler to draw freely. 4. Display the artwork proudly.
+        materials:
+           2 Sheets of paper, crayons (assorted colors), glue stick, safety scissors. 
+
+        """
+    )
+
     return
 
 
