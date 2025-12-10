@@ -1,5 +1,19 @@
 from google.adk.apps.app import EventsCompactionConfig
 from google.genai import types
+from pydantic_settings import BaseSettings
+
+
+class SupabaseSettings(BaseSettings):
+    """Supabase configuration settings."""
+
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
+
+    url: str | None = None
+    key: str | None = None
+
+
+supabase_settings = SupabaseSettings(_env_file=".env")
+
 
 retry_config = types.HttpRetryOptions(
     attempts=4,  # Maximum retry attempts
