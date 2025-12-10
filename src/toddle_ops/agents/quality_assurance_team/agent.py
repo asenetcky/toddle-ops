@@ -12,6 +12,7 @@ from toddle_ops.models.actions import ActionReport
 ### safety loop
 safety_critic_agent = LlmAgent(
     name="SafetyCriticAgent",
+    # model=LiteLlm(model="ollama_chat/gemma3:27b"),
     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction="""You are an expert at assessing toddler safety.
 
@@ -35,7 +36,8 @@ safety_critic_agent = LlmAgent(
 
 safety_refiner_agent = LlmAgent(
     name="SafetyRefinerAgent",
-    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+    model=LiteLlm(model="ollama_chat/mistral-nemo:12b"),
+    # model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction="""You are a project toddler safety specialist. You have a 
     draft toddler project and safety report.
     
@@ -75,7 +77,8 @@ editorial_agent = LlmAgent(
     - Correct all spelling and grammar mistakes.
     - Rewrite the project to improve clarity and correctness where necessary.
 
-    The final output should only correct the project content, maintaining the original format.
+    The final output should only correct the project content, 
+    maintaining the original format.
 
     """,
     output_key="standard_project",
