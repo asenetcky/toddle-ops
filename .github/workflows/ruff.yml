@@ -8,3 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/ruff-action@v3
+        with:
+          version: "0.14.7"
+          checksum: "8a545d346b3f6f979574df96b4fb2a983f2568fe200f1c1f690bd2cbdce5ea51"
+          args: "format --check --diff"

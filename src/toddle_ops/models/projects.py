@@ -1,8 +1,8 @@
+import uuid
 from enum import Enum
 from typing import List
 
 from pydantic import BaseModel, Field
-import uuid
 
 
 class Difficulty(str, Enum):
@@ -33,7 +33,6 @@ class Project(BaseModel):
     )
     name: str = Field(..., description="The name of the project.")
     description: str = Field(..., description="A brief description of the project.")
-    difficulty: Difficulty = Field(..., description="The difficulty of the project.")
     duration_minutes: int = Field(
         ..., description="The estimated duration of the project in minutes."
     )
