@@ -1,0 +1,18 @@
+services:
+  toddle-ops:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ADK_WEB_HOST=0.0.0.0
+      - ADK_WEB_PORT=8000
+    volumes:
+      # Mount data directory for persistent storage (optional)
+      - ./data:/app/data
+    restart: unless-stopped
+    container_name: toddle-ops-app

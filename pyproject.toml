@@ -30,6 +30,7 @@ build-backend = "uv_build"
 [project.optional-dependencies]
 dev = [
     "google-adk[eval]>=1.19.0",
+    "litellm>=1.0.0",
     "marimo>=0.18.0",
 ]
 test = [
@@ -39,6 +40,7 @@ test = [
 [dependency-groups]
 dev = [
     "google-adk[eval]>=1.19.0",
+    "litellm>=1.0.0",
     "marimo>=0.18.0",
     "opentelemetry-instrumentation-google-genai>=0.4b0",
 ]

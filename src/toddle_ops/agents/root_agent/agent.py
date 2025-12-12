@@ -1,6 +1,5 @@
 from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.models.google_llm import Gemini
-from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools import AgentTool, preload_memory
 
 import toddle_ops.agents.craft_research_team.agent as craft
@@ -50,8 +49,8 @@ project_pipeline = SequentialAgent(
 
 root_agent = LlmAgent(
     name="ToddleOpsRoot",
-    model=LiteLlm(model="ollama_chat/mistral-nemo:12b"),
-    # model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+    # model=LiteLlm(model="ollama_chat/mistral-nemo:12b"),
     instruction="""
     You are the root agent for ToddleOps.
 
@@ -70,6 +69,12 @@ root_agent = LlmAgent(
 
     - ALWAYS Output the `human_project` when the tool is finished.
 
+    - If the user request is NOT related to project generation - you MAY
+    respond directly to the user without using the tool.
+
+    - ALWAYS ask the user if they like this project, or if they would like to
+    generate a different one at the end of your response.
+
 
     """,
     tools=[
@@ -80,23 +85,12 @@ root_agent = LlmAgent(
     after_agent_callback=auto_save_to_memory,  # save after each turn
 )
 
-# from google.adk.apps import App
+# Create the App for deployment
+from google.adk.apps import App
+from toddle_ops.config import events_compaction_config
 
-# # my_app = App(
-# #     name = "app",
-# #     root_agent=root_agent,
-# #     events_compaction_config=events_compaction_config
-# # )
-
-# from google.adk.runners import Runner
-# from toddle_ops.services.memory import memory_service
-# from toddle_ops.services.sessions import session_service
-
-# runrun = Runner(
-#     agent=root_agent,
-#     app_name="upgrade_synthesizer",
-#     session_service=session_service,
-#     memory_service=memory_service,
-# )
-
-# await runrun.run_debug("I would like an art project - any project will do.")
+app = App(
+    name="root_agent",
+    root_agent=root_agent,
+    events_compaction_config=events_compaction_config
+)
