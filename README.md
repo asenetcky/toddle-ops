@@ -20,16 +20,17 @@ Keeping a toddler happily occupied is a fulltime job, and the odds are, you
 already have a fulltime job. Sprinkle in some sleep depravation, and your
 little one is likely to miss out on enriching activities.
 
-> Enter ToddleOps Project Generation Agent
+> Enter ToddleOps: A Multi-Agent Project Generation Concierge Service for
+> Exhausted Caregivers.
 
 Lower the barrier of entry to safe, fun toddler activities to the absolute
-floor with the ToddleOps Agent. It will provide projects, in a standard,
+floor with the ToddleOps Service. It will provide projects, in a standard,
 easy to follow format so *all* you have to do is conjure up every last drop
 of willpower in your tired, aching body to actually *do* the project!
 
 ## Installation
 
-### Requirements
+### Requirements(TODO)
 
 - uv
     - Please refer to 
@@ -39,7 +40,7 @@ of willpower in your tired, aching body to actually *do* the project!
     - Please refer to [Ollama's website for up-to-date installation instructions.](https://ollama.com/download)
 
 
-### Standard Installation
+### Standard Installation(TODO)
 
 ```bash
 # grab ollama models
@@ -57,7 +58,7 @@ uv sync
 ```
 
 
-## Usage
+## Usage (TODO)
 
 **uv**
 
@@ -99,4 +100,24 @@ Install [gcloud](https://docs.cloud.google.com/sdk/docs/install-sdk#rpm)
 cd ./src/toddle_ops/agents/
 adk deploy agent_engine --project=$GOOGLE_PROJECT_ID --region=$DEPLOYED_REGION vertex_agent --agent_engine_config_file=vertex_agent/.agent_engine_config.json
 ```
+
+
+## Agent Architecture
+
+Toddle Ops implements Google's opinionated [Agent Development Kit (ADK)](https://google.github.io/adk-docs/) framework to create a multi-agent system for generating toddler projects.
+
+The Toddle Ops Agent system is composed of the following agents:
+- Orchestrator Agent
+    - Orchestrates the overall project generation process.
+    - Delegates tasks to specialized sub-agents.
+- Project Research Agent
+    - Gathers information on suitable toddler projects based on caregiver inputs.
+    - Ensures projects are age-appropriate and safe.
+- Quality Assurance Agent Team
+    - Reviews the generated project for safety, engagement, and age-appropriateness.
+    - Provides feedback and requests revisions if necessary.
+- Project Formatting Agent
+    - Structures the project into a clear, easy-to-follow format.
+    - Ensures all necessary materials and steps are included.
+
 
