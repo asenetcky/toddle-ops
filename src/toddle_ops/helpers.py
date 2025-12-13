@@ -1,5 +1,6 @@
-from toddle_ops.models.reports import StatusReport
 from toddle_ops.enums import Status
+from toddle_ops.models.reports import StatusReport
+
 
 # helper function for exiting loops
 def exit_loop():
@@ -9,4 +10,3 @@ def exit_loop():
         StatusReport: A report with status APPROVED to signal loop exit.
     """
     return StatusReport(status=Status.APPROVED, message="Approved. Exiting loop.")
-

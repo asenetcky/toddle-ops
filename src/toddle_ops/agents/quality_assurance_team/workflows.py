@@ -1,5 +1,10 @@
-from google.adk.agents import SequentialAgent, LoopAgent
-from toddle_ops.agents.quality_assurance_team.agent import  editorial_agent, safety_critic_agent, safety_refiner_agent
+from google.adk.agents import LoopAgent, SequentialAgent
+
+from toddle_ops.agents.quality_assurance_team.agent import (
+    editorial_agent,
+    safety_critic_agent,
+    safety_refiner_agent,
+)
 
 # Workflows for Quality Assurance Team Agents
 

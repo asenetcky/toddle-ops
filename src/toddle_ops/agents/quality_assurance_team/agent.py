@@ -1,11 +1,11 @@
-from google.adk.agents import LlmAgent, LoopAgent, SequentialAgent
+from google.adk.agents import LlmAgent
 from google.adk.models.google_llm import Gemini
 from google.adk.tools import FunctionTool
 
 from toddle_ops.config import retry_config
 from toddle_ops.helpers import exit_loop
-from toddle_ops.models.reports import StatusReport
 from toddle_ops.models.agents import AgentInstructions
+from toddle_ops.models.reports import StatusReport
 
 # Define instructions for the Safety Critic Agent
 safety_critic_instructions = AgentInstructions(
@@ -16,7 +16,7 @@ safety_critic_instructions = AgentInstructions(
     rules=[
         "Provide a concise summary of your findings.",
         "If the project is safe, set status to 'Status.APPROVED'.",
-        "If the project is not safe, set status to 'Status.REVISION_NEEDED' and provide specific, actionable suggestions."
+        "If the project is not safe, set status to 'Status.REVISION_NEEDED' and provide specific, actionable suggestions.",
     ],
     constraints=[],
     incoming_keys=["standard_project"],
@@ -41,7 +41,7 @@ safety_refiner_instructions = AgentInstructions(
     rules=[
         "If the safety report status is 'APPROVED', call the `exit_loop` function and do nothing else.",
         "If the status is 'REVISION_NEEDED', carefully incorporate the feedback into the project.",
-        "Ensure the revised project maintains clarity and age-appropriateness."
+        "Ensure the revised project maintains clarity and age-appropriateness.",
     ],
     constraints=[],
     incoming_keys=["standard_project", "safety_report"],
@@ -70,7 +70,7 @@ editorial_instructions = AgentInstructions(
         "Ensure the instructions are easy for a parent or caregiver to understand.",
         "Correct all spelling and grammar mistakes.",
         "Rewrite the project to improve clarity and correctness where necessary.",
-        "The final output should only correct the project content, maintaining the original format."
+        "The final output should only correct the project content, maintaining the original format.",
     ],
     constraints=[],
     incoming_keys=["standard_project"],
@@ -83,4 +83,3 @@ editorial_agent = LlmAgent(
     instruction=editorial_instructions.format_instructions(),
     output_key="standard_project",
 )
-

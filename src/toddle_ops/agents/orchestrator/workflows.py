@@ -1,10 +1,11 @@
 from google.adk.agents import LlmAgent, SequentialAgent
 from google.adk.models.google_llm import Gemini
-import toddle_ops.agents.research_team.workflows as craft
+
 import toddle_ops.agents.quality_assurance_team.workflows as qa
+import toddle_ops.agents.research_team.workflows as craft
 from toddle_ops.config import retry_config
-from toddle_ops.models.projects import StandardProject
 from toddle_ops.models.agents import AgentInstructions
+from toddle_ops.models.projects import StandardProject
 
 # Define instructions for the Project Formatter Agent
 formatter_instructions = AgentInstructions(
@@ -28,7 +29,9 @@ formatter_instructions = AgentInstructions(
         - **Instructions:** A numbered list of step-by-step instructions for the project
         """,
     ],
-    constraints=["There should be no extra categories or preamble or comments before or after the instructions"],
+    constraints=[
+        "There should be no extra categories or preamble or comments before or after the instructions"
+    ],
     incoming_keys=["standard_project"],
 )
 

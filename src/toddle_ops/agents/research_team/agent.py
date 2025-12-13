@@ -1,11 +1,10 @@
-from google.adk.agents import LlmAgent, SequentialAgent
+from google.adk.agents import LlmAgent
 from google.adk.models.google_llm import Gemini
 from google.adk.tools import google_search
 
 from toddle_ops.config import retry_config
+from toddle_ops.models.agents import AgentInstructions
 from toddle_ops.models.projects import StandardProject
-from toddle_ops.models.agents import AgentInstructions  
-
 
 # Define instructions for the Project Researcher Agent
 project_researcher_instructions = AgentInstructions(
@@ -16,7 +15,7 @@ project_researcher_instructions = AgentInstructions(
     rules=[
         "You WILL ONLY provide one project.",
         "Use google search to find the most relevant and safe toddler projects.",
-        "Be sure to include at least the following: the project name, duration of project, required materials for project, step by step instructions."
+        "Be sure to include at least the following: the project name, duration of project, required materials for project, step by step instructions.",
     ],
     constraints=[],
     incoming_keys=[],
@@ -40,7 +39,7 @@ project_synthesizer_instructions = AgentInstructions(
     ],
     rules=[
         "You can either pick the best parts from the project from the provided research, or combine elements to create a new project.",
-        "Your output MUST be a `StandardProject` object."
+        "Your output MUST be a `StandardProject` object.",
     ],
     constraints=[],
     incoming_keys=["project_research"],
@@ -55,4 +54,3 @@ project_synthesizer = LlmAgent(
     output_schema=StandardProject,
     output_key="standard_project",
 )
-
