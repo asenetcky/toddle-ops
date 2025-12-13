@@ -27,9 +27,9 @@ class AgentInstructions(BaseModel):
         """
 
         objectives = "".join(f"\t- {obj}\n" for obj in self.primary_objective)    
-        rules = "".join(f"\t- {rule}\n" for rule in self.rules)
-        constraints = "".join(f"\t- {constraint}\n" for constraint in self.constraints)
-        incoming_keys = "".join(f"\t- {{{key}}}\n" for key in self.incoming_keys)
+        rules = "".join(f"\t- {rule}\n" for rule in (self.rules or []))
+        constraints = "".join(f"\t- {constraint}\n" for constraint in (self.constraints or []))
+        incoming_keys = "".join(f"\t- {{{key}}}\n" for key in (self.incoming_keys or []))
         
         instructions = (
             f"Persona: You are a {self.persona}\n\n"
