@@ -4,7 +4,7 @@ from google.adk.tools import FunctionTool
 
 from toddle_ops.config import retry_config
 from toddle_ops.helpers import exit_loop
-from toddle_ops.models.actions import ActionReport
+from toddle_ops.models.reports import ActionReport
 from toddle_ops.models.agents import AgentInstructions
 
 # Define instructions for the Safety Critic Agent
