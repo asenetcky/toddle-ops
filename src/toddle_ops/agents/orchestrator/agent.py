@@ -11,40 +11,12 @@ from toddle_ops.models.projects import StandardProject
 from toddle_ops.services.callbacks import auto_save_to_memory
 from toddle_ops.models.agents import AgentInstructions
 
-# project_formatter = LlmAgent(
-#     name="ProjectFormatter",
-#     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
-#     instruction="""You are a project formatter. You will receive a 
-#     `StandardProject` object and your task is to format it into a human-readable
-#     markdown format.
 
-#     Here is the project data:
-#     {standard_project}
-
-#     There should be no extra categories or preamble or comments before or 
-#     after the instructions.
-
-#     Format should look like the following:
-    
-#     - **Name:** The name of the project
-
-#     - **Description:** A brief 2-3 sentence description of the project
-
-#     - **Duration:** The estimated duration of the project in minutes
-
-#     - **Materials:** A bulleted list of materials required for the project
-
-#     - **Instructions:** A numbered list of step-by-step instructions for the project
-#     """,
-#     input_schema=StandardProject,
-#     output_key="human_project",
-# )
-
-
+# Define instructions for the Project Formatter Agent
 formatter_instructions = AgentInstructions(
     persona="Project Formatter Agent",
     primary_objective=["Format StandardProject objects into human-readable markdown."],
-    guiding_principles=[
+    rules=[
         "Be concise and clear.",
         "Follow the specified format exactly.",
         "Ensure all required sections are included.",
@@ -66,15 +38,17 @@ formatter_instructions = AgentInstructions(
     incoming_keys=["standard_project"],
 )
 
-
+# Create the Project Formatter Agent using the defined instructions
 project_formatter = LlmAgent(
     name="ProjectFormatter",
+    description="Formats StandardProject objects into human-readable markdown.",
     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
-    instruction=formatter_instructions.model_dump_json(),
+    instruction=formatter_instructions.format_instructions(),
     input_schema=StandardProject,
     output_key="human_project",
 )
 
+# Define the overall project pipeline as a Sequential Agent
 project_pipeline = SequentialAgent(
     name="ToddleOpsSequence",
     sub_agents=[
@@ -84,30 +58,27 @@ project_pipeline = SequentialAgent(
     ],
 )
 
+# Define instructions for the Root Agent
+root_agent_instructions = AgentInstructions(
+    persona="ToddleOps Root Agent",
+    primary_objective=["Generate new projects for users based on their requests using the `ToddleOpsSequence` tool."],
+    rules=[
+        "Your PRIMARY purpose is to generate new projects for users based on their requests using the `ToddleOpsSequence` tool you MUST use this tool for project requests.",
+        "You SHOULD NOT attempt to generate projects yourself without using this tool.",
+        "If a user asks for a project with no details - do not prompt them for more details - just use the `ToddleOpsSequence` tool.",
+        "If they provide helpful details - pass that context on to the `ToddleOpsSequence` tool.",
+        "ALWAYS Output the `human_project` when the tool is finished.",
+    ],
+    constraints=[],
+    incoming_keys=[],
+)
+
+# Create the Root Agent using the defined instructions
 root_agent = LlmAgent(
     name="ToddleOpsRoot",
-    model=LiteLlm(model="ollama_chat/mistral-nemo:12b"),
-    # model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
-    instruction="""
-    You are the root agent for ToddleOps.
-
-    - Your PRIMARY purpose is to generate new projects for users based on their 
-    requests using the `ToddleOpsSequence` tool you MUST use this tool for
-    project requests.
-
-    - You SHOULD NOT attempt to generate projects yourself without using this 
-    tool.
-
-    - If a user asks for a project with no details - do not prompt them for
-    more details - just use the `ToddleOpsSequence` tool.
-
-    - If they provide helpful details - pass that context on to the 
-    `ToddleOpsSequence` tool.
-
-    - ALWAYS Output the `human_project` when the tool is finished.
-
-
-    """,
+    description="The root agent for all of ToddleOps that orchestrates project generation.",
+    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+    instruction=root_agent_instructions.format_instructions(),
     tools=[
         AgentTool(project_pipeline),
         preload_memory,
