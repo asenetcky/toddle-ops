@@ -38,6 +38,7 @@ This project grew out of the [Google 5-Day AI Agents Intensive Course](https://w
 - 🛡️ **Safety First** - Built-in safety critic and refiner ensure projects are toddler-safe
 - ✏️ **Editorial Polish** - Grammar and clarity checks for easy-to-follow instructions
 - 💾 **Session Memory** - Remembers your preferences across conversations
+- 🗄️ **Supabase Integration** - PostgreSQL database backend for persistent session storage
 - 🌐 **Web Interface** - Clean, modern UI powered by ADK Web Server
 - 📝 **Structured Output** - Consistent format with materials, duration, and step-by-step instructions
 
@@ -74,6 +75,10 @@ Create a `.env` file in the project root:
 # Required: Gemini API Key
 GOOGLE_API_KEY=your_api_key_here
 
+# Required: Supabase Database Configuration
+SUPABASE_USER=your_supabase_user
+SUPABASE_PASSWORD=your_supabase_password
+
 # Optional: For production deployments
 GOOGLE_PROJECT_ID=your_project_id
 DEPLOYED_REGION=us-central1
@@ -102,13 +107,14 @@ uv run ./src/toddle_ops/main.py
 Launch the interactive web UI with hot-reloading:
 
 ```bash
-cd src/toddle_ops
+cd src/toddle_ops/agents
 adk web
 ```
 
 Then open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
 ```bash
+cd src/toddle_ops/agents
 adk run orchestrator
 ```
 
@@ -138,6 +144,64 @@ Agent: [Researches, validates, and formats a safe project...]
     5. Secure the Lid: Glue the lid shut and allow to dry completely
     6. Test and Play: Shake and observe the slow, captivating movement
 ```
+
+---
+
+## 🗄️ Supabase Integration
+
+Toddle Ops uses **Supabase** (PostgreSQL) for persistent session storage, allowing conversations to be resumed across application restarts.
+
+### Database Setup
+
+1. **Create a Supabase Project**
+   - Sign up at [supabase.com](https://supabase.com)
+   - Create a new project
+   - Wait for the database to be provisioned
+
+2. **Get Database Credentials**
+   - Navigate to Project Settings → Database
+   - Copy your database password (you set this during project creation)
+   - Note your database user (usually `postgres`)
+
+3. **Configure Environment Variables**
+   ```bash
+   SUPABASE_USER=postgres
+   SUPABASE_PASSWORD=your_password_here
+   ```
+
+### Session Service Architecture
+
+The application uses ADK's `DatabaseSessionService` to:
+- **Persist user sessions** across application restarts
+- **Store conversation history** for context continuity
+- **Manage session metadata** (user IDs, timestamps, app names)
+- **Support concurrent users** with isolated session data
+
+```python
+# From src/toddle_ops/services/sessions.py
+db_url = f"postgresql+asyncpg://{SUPABASE_USER}:{SUPABASE_PASSWORD}@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
+session_service = DatabaseSessionService(db_url=db_url)
+```
+
+### Benefits
+
+✅ **Persistent Conversations** - Resume exactly where you left off  
+✅ **Multi-User Support** - Each user has isolated session data  
+✅ **Scalable Storage** - PostgreSQL handles large conversation histories  
+✅ **Cloud-Native** - Supabase provides managed infrastructure  
+✅ **Easy Migration** - Standard PostgreSQL compatible with other databases
+
+### Alternative: Local Development
+
+For local development without Supabase, you can switch to in-memory sessions:
+
+```python
+# In src/toddle_ops/services/sessions.py
+from google.adk.sessions import InMemorySessionService
+session_service = InMemorySessionService()
+```
+
+⚠️ **Note:** In-memory sessions are lost when the application restarts.
 
 ---
 
@@ -279,6 +343,7 @@ adk deploy agent_engine \
 - [x] Safety validation system with critic and refiner agents
 - [x] Editorial agent for polished output
 - [x] Session memory and conversation history
+- [x] Supabase PostgreSQL integration for persistent sessions
 - [x] Custom error handling with ReflectAndRetryToolPlugin
 - [x] Pydantic models for structured data
 - [x] Command-line interface with session management
@@ -313,6 +378,8 @@ adk deploy agent_engine \
 - Better integration between safety critic and refiner agents
 - Cleaner separation between `APPROVED`, `PENDING`, `REVISION_NEEDED`, and `REJECTED` statuses
 - More robust error handling with backward compatibility
+- Integrated Supabase PostgreSQL for persistent session storage
+- Database-backed session service using ADK's `DatabaseSessionService`
 
 **Development:**
 - Updated plugin system to handle mixed return types (Pydantic models and dicts)
