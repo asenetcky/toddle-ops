@@ -4,16 +4,9 @@ import asyncio
 import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-from threading import Thread
 
 import streamlit as st
 from dotenv import load_dotenv
-from google.adk.runners import Runner
-from google.genai import types
-
-from toddle_ops.app import app
-from toddle_ops.services.memory import memory_service
-from toddle_ops.services.sessions import session_service
 
 # Load environment variables
 load_dotenv()
@@ -71,61 +64,75 @@ def init_session_state():
         st.session_state.session_id = None
     if "user_id" not in st.session_state:
         st.session_state.user_id = "streamlit_user"
-    if "runner" not in st.session_state:
-        st.session_state.runner = Runner(
-            app=app, session_service=session_service, memory_service=memory_service
-        )
     if "pending_prompt" not in st.session_state:
         st.session_state.pending_prompt = None
 
 
-async def create_session(user_id: str):
-    """Create a new ADK session."""
-    session = await session_service.create_session(
-        app_name=app.name, user_id=user_id
-    )
-    return session
+def _generate_project_sync(prompt: str, user_id: str, session_id: str | None) -> tuple[str, str]:
+    """
+    Generate a project synchronously in a separate thread with its own event loop.
+    
+    This function creates all async resources (session_service, runner, etc.) fresh
+    inside the new event loop to avoid cross-loop issues with asyncpg.
+    """
+    
+    async def _run():
+        # Import and create all async resources inside the async context
+        # This ensures they're bound to this thread's event loop
+        from google.adk.memory import InMemoryMemoryService
+        from google.adk.runners import Runner
+        from google.adk.sessions import InMemorySessionService
+        from google.genai import types
 
+        from toddle_ops.app import app
 
-def run_async_task(coro):
-    """Run async task in a separate thread with its own event loop."""
+        # Use InMemorySessionService for Streamlit UI to avoid
+        # cross-request serialization issues with DatabaseSessionService
+        local_session_service = InMemorySessionService()
+        local_memory_service = InMemoryMemoryService()
+        
+        # Create runner with fresh services
+        runner = Runner(
+            app=app,
+            session_service=local_session_service,
+            memory_service=local_memory_service,
+        )
+
+        # Always create a fresh session for each request
+        # (InMemorySessionService doesn't persist across requests anyway)
+        session = await local_session_service.create_session(
+            app_name=app.name, user_id=user_id
+        )
+        current_session_id = session.id
+
+        # Create message content
+        content = types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
+
+        # Run the agent
+        response_text = ""
+        async for event in runner.run_async(
+            user_id=user_id,
+            session_id=current_session_id,
+            new_message=content,
+        ):
+            if event.content and event.content.parts and event.content.parts[0].text:
+                response_text = event.content.parts[0].text
+
+        return response_text, current_session_id
+
     def run_in_thread():
-        # Create a new event loop for this thread
+        # Create a completely new event loop for this thread
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
-            return loop.run_until_complete(coro)
+            return loop.run_until_complete(_run())
         finally:
             loop.close()
-    
-    # Run in a thread to avoid Streamlit's event loop conflicts
+
+    # Run in a separate thread
     with ThreadPoolExecutor(max_workers=1) as executor:
         future = executor.submit(run_in_thread)
         return future.result()
-
-
-async def generate_project(prompt: str, user_id: str, session_id: str | None, runner):
-    """Generate a project using the agent."""
-    # Ensure session exists
-    if session_id is None:
-        session = await create_session(user_id)
-        session_id = session.id
-
-    # Create message content
-    content = types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
-
-    # Run the agent
-    response_text = ""
-
-    async for event in runner.run_async(
-        user_id=user_id,
-        session_id=session_id,
-        new_message=content,
-    ):
-        if event.content.parts and event.content.parts[0].text:
-            response_text = event.content.parts[0].text
-
-    return response_text, session_id
 
 
 def main():
@@ -203,7 +210,7 @@ def main():
         if st.session_state.pending_prompt:
             prompt = st.session_state.pending_prompt
             st.session_state.pending_prompt = None
-            
+
             # Add user message
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
@@ -212,16 +219,12 @@ def main():
             # Generate response
             with st.chat_message("assistant"):
                 with st.spinner("🤖 Generating project..."):
-                    response, new_session_id = run_async_task(
-                        generate_project(
-                            prompt,
-                            st.session_state.user_id,
-                            st.session_state.session_id,
-                            st.session_state.runner
-                        )
+                    response, new_session_id = _generate_project_sync(
+                        prompt,
+                        st.session_state.user_id,
+                        st.session_state.session_id,
                     )
-                    if new_session_id:
-                        st.session_state.session_id = new_session_id
+                    st.session_state.session_id = new_session_id
                     st.markdown(response)
 
             # Add assistant message
@@ -240,16 +243,12 @@ def main():
             # Generate response
             with st.chat_message("assistant"):
                 with st.spinner("🤖 Generating project..."):
-                    response, new_session_id = run_async_task(
-                        generate_project(
-                            prompt,
-                            st.session_state.user_id,
-                            st.session_state.session_id,
-                            st.session_state.runner
-                        )
+                    response, new_session_id = _generate_project_sync(
+                        prompt,
+                        st.session_state.user_id,
+                        st.session_state.session_id,
                     )
-                    if new_session_id:
-                        st.session_state.session_id = new_session_id
+                    st.session_state.session_id = new_session_id
                     st.markdown(response)
 
             # Add assistant message
