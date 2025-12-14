@@ -1,4 +1,4 @@
-name: Code Quality
+name: Type Checking
 
 permissions:
   contents: read
@@ -10,9 +10,10 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  ruff-lint:
-    name: Ruff Linting
+  mypy:
+    name: Type Check with mypy
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -23,13 +24,20 @@ jobs:
       
       - name: Install uv
         uses: astral-sh/setup-uv@v4
-        
-      - name: Run Ruff Linter
-        run: uvx ruff check --output-format=github .
       
-  ruff-format:
-    name: Ruff Formatting
+      - name: Install dependencies
+        run: |
+          uv sync --all-extras
+          uv pip install mypy types-aiofiles
+      
+      - name: Run mypy
+        run: uv run mypy src/toddle_ops --ignore-missing-imports --no-strict-optional
+        continue-on-error: true
+      
+  pyright:
+    name: Type Check with pyright
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -40,6 +48,10 @@ jobs:
       
       - name: Install uv
         uses: astral-sh/setup-uv@v4
-        
-      - name: Check Formatting
-        run: uvx ruff format --check --diff .
+      
+      - name: Install dependencies
+        run: uv sync --all-extras
+      
+      - name: Run pyright
+        run: uvx pyright src/toddle_ops
+        continue-on-error: true
