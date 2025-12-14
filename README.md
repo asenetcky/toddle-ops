@@ -38,6 +38,7 @@ This project grew out of the [Google 5-Day AI Agents Intensive Course](https://w
 - 🛡️ **Safety First** - Built-in safety critic and refiner ensure projects are toddler-safe
 - ✏️ **Editorial Polish** - Grammar and clarity checks for easy-to-follow instructions
 - 💾 **Session Memory** - Remembers your preferences across conversations
+- 🗄️ **Supabase Integration** - PostgreSQL database backend for persistent session storage
 - 🌐 **Web Interface** - Clean, modern UI powered by ADK Web Server
 - 📝 **Structured Output** - Consistent format with materials, duration, and step-by-step instructions
 
@@ -74,6 +75,10 @@ Create a `.env` file in the project root:
 # Required: Gemini API Key
 GOOGLE_API_KEY=your_api_key_here
 
+# Required: Supabase Database Configuration
+SUPABASE_USER=your_supabase_user
+SUPABASE_PASSWORD=your_supabase_password
+
 # Optional: For production deployments
 GOOGLE_PROJECT_ID=your_project_id
 DEPLOYED_REGION=us-central1
@@ -83,7 +88,21 @@ DEPLOYED_REGION=us-central1
 
 ## 🎮 Usage
 
-### Option 1: Web Interface (Recommended)
+### Option 1: Command Line Interface
+
+Run the agent directly from the terminal using the convenient Makefile:
+
+```bash
+make run
+```
+
+Or run directly with uv:
+
+```bash
+uv run ./src/toddle_ops/main.py
+```
+
+### Option 2: Web Interface
 
 Launch the interactive web UI with hot-reloading:
 
@@ -94,37 +113,95 @@ adk web
 
 Then open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
-### Option 2: Command Line
-
-Run the agent directly from the terminal:
-
 ```bash
+cd src/toddle_ops/agents
 adk run orchestrator
 ```
 
 ### Example Interaction
 
 ```
-You: I need a project for my 2-year-old
+You: Hello ToddleOps! Please create a new project for me.
 Agent: [Researches, validates, and formats a safe project...]
 
-📋 Toddler Sensory Bin Adventure
-
-🕐 Duration: 20 minutes
-
-📦 Materials:
-• Large plastic container or bin
-• Dry rice or pasta (1-2 cups)
-• Kitchen utensils (measuring cups, spoons)
-• Small toys or objects to hide
-
-📝 Instructions:
-1. Fill the bin with rice or pasta
-2. Hide small toys throughout
-3. Let your toddler explore and discover
-4. Supervise closely to prevent ingestion
-...
+- **Name:** DIY Sensory Bottle
+- **Description:** Create a mesmerizing sensory bottle filled with colorful 
+  and sparkly items that slowly drift and swirl, providing a calming visual 
+  experience for toddlers.
+- **Duration:** 30 minutes
+- **Materials:**
+    * Empty, clean plastic bottle with a secure lid
+    * Water
+    * Clear glue or corn syrup
+    * Glitter, sequins, large pom-poms
+    * Food coloring (optional)
+    * Strong adhesive for sealing the lid
+- **Instructions:**
+    1. Prepare the Bottle: Ensure the bottle is clean and dry
+    2. Add Base Liquid and Fillers: Fill 2/3 full with warm water and glue
+    3. Add Decorative Items: Add glitter, sequins, and large items
+    4. Add Color (Optional): Add food coloring if desired
+    5. Secure the Lid: Glue the lid shut and allow to dry completely
+    6. Test and Play: Shake and observe the slow, captivating movement
 ```
+
+---
+
+## 🗄️ Supabase Integration
+
+Toddle Ops uses **Supabase** (PostgreSQL) for persistent session storage, allowing conversations to be resumed across application restarts.
+
+### Database Setup
+
+1. **Create a Supabase Project**
+   - Sign up at [supabase.com](https://supabase.com)
+   - Create a new project
+   - Wait for the database to be provisioned
+
+2. **Get Database Credentials**
+   - Navigate to Project Settings → Database
+   - Copy your database password (you set this during project creation)
+   - Note your database user (usually `postgres`)
+
+3. **Configure Environment Variables**
+   ```bash
+   SUPABASE_USER=postgres
+   SUPABASE_PASSWORD=your_password_here
+   ```
+
+### Session Service Architecture
+
+The application uses ADK's `DatabaseSessionService` to:
+- **Persist user sessions** across application restarts
+- **Store conversation history** for context continuity
+- **Manage session metadata** (user IDs, timestamps, app names)
+- **Support concurrent users** with isolated session data
+
+```python
+# From src/toddle_ops/services/sessions.py
+db_url = f"postgresql+asyncpg://{SUPABASE_USER}:{SUPABASE_PASSWORD}@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
+session_service = DatabaseSessionService(db_url=db_url)
+```
+
+### Benefits
+
+✅ **Persistent Conversations** - Resume exactly where you left off  
+✅ **Multi-User Support** - Each user has isolated session data  
+✅ **Scalable Storage** - PostgreSQL handles large conversation histories  
+✅ **Cloud-Native** - Supabase provides managed infrastructure  
+✅ **Easy Migration** - Standard PostgreSQL compatible with other databases
+
+### Alternative: Local Development
+
+For local development without Supabase, you can switch to in-memory sessions:
+
+```python
+# In src/toddle_ops/services/sessions.py
+from google.adk.sessions import InMemorySessionService
+session_service = InMemorySessionService()
+```
+
+⚠️ **Note:** In-memory sessions are lost when the application restarts.
 
 ---
 
@@ -175,16 +252,28 @@ graph TD
 ```
 toddle-ops/
 ├── src/toddle_ops/
-│   ├── agents/           # Agent definitions
-│   │   ├── orchestrator/ # Root agent
-│   │   ├── research_team/
-│   │   └── quality_assurance_team/
-│   ├── models/           # Pydantic models
-│   ├── services/         # Memory, sessions, callbacks
-│   └── config.py         # Configuration
-├── tests/                # Test suite
-├── notebooks/            # Marimo notebooks for development
-└── pyproject.toml        # Project dependencies
+│   ├── agents/                        # Agent definitions
+│   │   ├── orchestrator/              # Root agent and workflows
+│   │   ├── research_team/             # Research and synthesis agents
+│   │   └── quality_assurance_team/    # Safety and editorial agents
+│   ├── models/                        # Pydantic models
+│   │   ├── agents.py                  # Agent instruction models
+│   │   ├── projects.py                # Project data models
+│   │   └── reports.py                 # Status report models
+│   ├── services/                      # Core services
+│   │   ├── callbacks.py               # Agent callbacks
+│   │   ├── memory.py                  # Memory service
+│   │   └── sessions.py                # Session management
+│   ├── app.py                         # ADK App configuration
+│   ├── config.py                      # Application configuration
+│   ├── enums.py                       # Status enums
+│   ├── helpers.py                     # Helper functions
+│   ├── main.py                        # CLI entry point
+│   └── plugins.py                     # Custom retry plugin
+├── tests/                             # Test suite
+├── notebooks/                         # Marimo notebooks for development
+├── Makefile                           # Development commands
+└── pyproject.toml                     # Project dependencies
 ```
 
 ### Running Tests
@@ -203,6 +292,24 @@ make ruff
 uvx ruff check --select I --fix
 uvx ruff format
 ```
+
+### Development Makefile Commands
+
+```bash
+make install      # Install production dependencies only
+make install-dev  # Install all dependencies including dev tools
+make ruff         # Run code formatting and linting
+make run          # Run the application
+```
+
+### Key Features in Current Implementation
+
+- **Custom Plugin System**: `CustomRetryPlugin` handles errors from both Pydantic models and dictionaries
+- **Structured Models**: Pydantic models for `StatusReport`, `StandardProject`, and agent instructions
+- **Memory Service**: Persistent session and conversation history using ADK memory system
+- **Agent Callbacks**: Automatic memory saving after each agent turn
+- **Error Handling**: Robust error detection and retry logic with reflection
+- **Status Workflow**: Approval workflow with states: `APPROVED`, `PENDING`, `REVISION_NEEDED`, `REJECTED`
 
 ---
 
@@ -231,14 +338,53 @@ adk deploy agent_engine \
 
 ## 🗺️ Roadmap
 
+### Completed ✅
 - [x] Multi-agent architecture with ADK
-- [x] Safety validation system
-- [x] Web interface with session memory
+- [x] Safety validation system with critic and refiner agents
+- [x] Editorial agent for polished output
+- [x] Session memory and conversation history
+- [x] Supabase PostgreSQL integration for persistent sessions
+- [x] Custom error handling with ReflectAndRetryToolPlugin
+- [x] Pydantic models for structured data
+- [x] Command-line interface with session management
+- [x] Makefile for easy development workflow
+
+### In Progress 🚧
+- [ ] Web interface improvements
+- [ ] Enhanced safety validation rules
+
+### Future Features 🔮
 - [ ] User authentication and project history
 - [ ] Local project storage with MCP SQLite integration
 - [ ] PDF export of projects
 - [ ] Image generation for project visualization
 - [ ] Mobile-responsive design improvements
+- [ ] Project rating and feedback system
+- [ ] Custom project templates
+
+---
+
+## 🔧 Recent Updates
+
+### Version 0.3.0
+
+**Bug Fixes:**
+- Fixed `AttributeError` in `CustomRetryPlugin` when handling `StatusReport` Pydantic models
+- Proper type checking for both Pydantic models and dictionary results
+- Improved error detection logic to distinguish between workflow status and actual errors
+
+**Improvements:**
+- Enhanced safety refinement loop with proper status handling
+- Better integration between safety critic and refiner agents
+- Cleaner separation between `APPROVED`, `PENDING`, `REVISION_NEEDED`, and `REJECTED` statuses
+- More robust error handling with backward compatibility
+- Integrated Supabase PostgreSQL for persistent session storage
+- Database-backed session service using ADK's `DatabaseSessionService`
+
+**Development:**
+- Updated plugin system to handle mixed return types (Pydantic models and dicts)
+- Improved logging and debugging output
+- Added comprehensive type hints throughout the codebase
 
 ---
 
