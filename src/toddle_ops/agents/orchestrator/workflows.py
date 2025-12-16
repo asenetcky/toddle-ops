@@ -6,6 +6,7 @@ import toddle_ops.agents.research_team.workflows as craft
 from toddle_ops.config import retry_config
 from toddle_ops.models.agents import AgentInstructions
 from toddle_ops.models.projects import StandardProject
+from toddle_ops.prompt import project_format
 
 # Define instructions for the Project Formatter Agent
 formatter_instructions = AgentInstructions(
@@ -15,19 +16,7 @@ formatter_instructions = AgentInstructions(
         "Be concise and clear.",
         "Follow the specified format exactly.",
         "Ensure all required sections are included.",
-        """
-        Format should look like the following:
-        
-        - **Name:** The name of the project
-
-        - **Description:** A brief 2-3 sentence description of the project
-
-        - **Duration:** The estimated duration of the project in minutes
-
-        - **Materials:** A bulleted list of materials required for the project
-
-        - **Instructions:** A numbered list of step-by-step instructions for the project
-        """,
+        project_format,
     ],
     constraints=[
         "There should be no extra categories or preamble or comments before or after the instructions"
