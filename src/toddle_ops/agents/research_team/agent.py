@@ -10,19 +10,19 @@ from toddle_ops.agents.research_team.workflows import research_sequence
 from google.adk.tools import AgentTool
 
 
-
 # Define instructions for the Project Synthesizer Agent
 research_coordinator_instructions = AgentInstructions(
     persona="Project Research Coordinator",
     primary_objective=[
-        "Analyze research output from the Project Researcher and create a single, sensible toddler project."
+        "Coordinate the research team to create a safe and engaging toddler project suitable for children aged 1-3 years."
     ],
     rules=[
-        "You can either pick the best parts from the project from the provided research, or combine elements to create a new project.",
-        "Your output MUST be a `StandardProject` object.",
+        "You MUST use your tools to delegate tasks.",
+        "Use the research_sequence to gather diverse project ideas.",
+        "Use the default_temp_project_researcher to explore specific project ideas when coordinating with the Orchestrator Agent."
     ],
     constraints=[],
-    incoming_keys=["low_temp_project_research", "high_temp_project_research", "default_temp_project_research"],
+    incoming_keys=["StandardProject"],
 )
 
 # Create the Project Synthesizer Agent using the defined instructions
