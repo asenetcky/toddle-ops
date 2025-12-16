@@ -1,0 +1,79 @@
+{
+  "eval_set_id": "research_team",
+  "name": "research_team",
+  "eval_cases": [
+    {
+      "eval_id": "random_project",
+      "conversation": [
+        {
+          "invocation_id": "e-5e871b64-b46d-49ff-b067-44cf5c74d072",
+          "user_content": {
+            "parts": [
+              {
+                "text": "Hello, I would like a random project please."
+              }
+            ],
+            "role": "user"
+          },
+          "final_response": {
+            "parts": [
+              {
+                "text": "{\n  \"name\": \"Toilet Paper Roll Animals\",\n  \"description\": \"This project is a fantastic way to use common household items for a fun and creative toddler activity. It encourages fine motor skills and imagination.\",\n  \"duration_minutes\": 45,\n  \"instructions\": \"1. Prepare the Rolls: Gather your toilet paper rolls. If you are using paint, your toddler can paint the rolls any color they like. If using crayons, they can color directly on the rolls. Let any paint dry completely.\\n2. Cut Out Body Parts: With adult supervision, use scissors to cut out shapes from construction paper for legs, tails, arms, heads, or any other body parts the animal might need.\\n3. Assemble the Animal: Help your toddler glue the paper body parts onto the toilet paper roll to create their chosen animal. Encourage them to decide what kind of animal they want to make!\\n4. Add Details (Optional): If you have them, let your toddler glue on googly eyes, buttons for eyes, or yarn for hair. Pipe cleaners can be used for antennae or whiskers.\\n5. Let it Dry: Allow the glue to dry completely.\",\n  \"materials\": \"* Empty toilet paper rolls (or paper towel rolls cut down)\\n* Construction paper\\n* Glue stick or child-safe liquid glue\\n* Crayons or child-safe paint\\n* Scissors (for adult use)\\n* Optional: Googly eyes, buttons, yarn, pipe cleaners, fabric scraps\"\n}"
+              }
+            ],
+            "role": "model"
+          },
+          "intermediate_data": {
+            "invocation_events": [
+              {
+                "author": "ProjectResearchCoordinator",
+                "content": {
+                  "parts": [
+                    {
+                      "function_call": {
+                        "id": "adk-a294fd30-a850-4e31-85ec-bf06293a2645",
+                        "args": {
+                          "agent_name": "ResearchSequence"
+                        },
+                        "name": "transfer_to_agent"
+                      }
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "ProjectResearchCoordinator",
+                "content": {
+                  "parts": [
+                    {
+                      "function_response": {
+                        "id": "adk-a294fd30-a850-4e31-85ec-bf06293a2645",
+                        "name": "transfer_to_agent",
+                        "response": {
+                          "result": null
+                        }
+                      }
+                    }
+                  ],
+                  "role": "user"
+                }
+              }
+            ]
+          },
+          "creation_timestamp": 1765886773.739016
+        }
+      ],
+      "session_input": {
+        "app_name": "research_team",
+        "user_id": "user",
+        "state": {
+          "low_temp_project_research": "",
+          "high_temp_project_research": ""
+        }
+      },
+      "creation_timestamp": 1765886856.842489
+    }
+  ],
+  "creation_timestamp": 1765886845.2779188
+}
