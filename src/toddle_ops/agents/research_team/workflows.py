@@ -1,6 +1,6 @@
 from google.adk.agents import SequentialAgent, ParallelAgent
 
-from toddle_ops.agents.research_team.agent import (
+from toddle_ops.agents.research_team.sub_agent import (
     high_temp_project_researcher,
     low_temp_project_researcher,
     project_synthesizer,

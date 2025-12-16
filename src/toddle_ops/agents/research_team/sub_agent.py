@@ -15,7 +15,7 @@ project_researcher_instructions = AgentInstructions(
     ],
     rules=[
         "You WILL ONLY provide one project.",
-        "Use google search to find the most relevant and safe toddler projects.",
+        "You MUST use google search to find the most relevant and safe toddler projects.",
         "Be sure to include at least the following: the project name, duration of project, required materials for project, step by step instructions.",
     ],
     constraints=[],
@@ -31,7 +31,7 @@ low_temp_project_researcher = LlmAgent(
     tools=[google_search],
     output_key="low_temp_project_research",
     generate_content_config=types.GenerateContentConfig(
-        max_output_tokens=1000,
+        max_output_tokens=1500,
         temperature=0.7,
         safety_settings=[
             types.SafetySetting(
@@ -50,7 +50,7 @@ default_temp_project_researcher = LlmAgent(
     tools=[google_search],
     output_key="default_temp_project_research",
     generate_content_config=types.GenerateContentConfig(
-        max_output_tokens=1000,
+        max_output_tokens=1500,
         temperature=1.0,
         safety_settings=[
             types.SafetySetting(
@@ -69,7 +69,7 @@ high_temp_project_researcher = LlmAgent(
     tools=[google_search],
     output_key="high_temp_project_research",
     generate_content_config=types.GenerateContentConfig(
-        max_output_tokens=1000,
+        max_output_tokens=1500,
         temperature=1.2,
         safety_settings=[
             types.SafetySetting(
@@ -91,7 +91,7 @@ project_synthesizer_instructions = AgentInstructions(
         "Your output MUST be a `StandardProject` object.",
     ],
     constraints=[],
-    incoming_keys=["low_temp_project_research", "high_temp_project_research", "default_temp_project_research"],
+    incoming_keys=["low_temp_project_research", "high_temp_project_research"],
 )
 
 # Create the Project Synthesizer Agent using the defined instructions

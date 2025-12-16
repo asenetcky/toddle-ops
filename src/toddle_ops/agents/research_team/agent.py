@@ -7,6 +7,7 @@ from toddle_ops.models.agents import AgentInstructions
 from toddle_ops.models.projects import StandardProject
 from toddle_ops.agents.research_team.sub_agent import default_temp_project_researcher
 from toddle_ops.agents.research_team.workflows import research_sequence
+from toddle_ops.prompt import project_format
 from google.adk.tools import AgentTool
 
 
@@ -17,12 +18,11 @@ research_coordinator_instructions = AgentInstructions(
         "Coordinate the research team to create a safe and engaging toddler project suitable for children aged 1-3 years."
     ],
     rules=[
-        "You MUST use your tools to delegate tasks.",
+        "You MUST delegate tasks to your tools and sub-agents.",
         "Use the research_sequence to gather diverse project ideas.",
-        "Use the default_temp_project_researcher to explore specific project ideas when coordinating with the Orchestrator Agent."
+        "Use the default_temp_project_researcher to explore specific project research when coordinating with the Orchestrator Agent.",
+        project_format,
     ],
-    constraints=[],
-    incoming_keys=["StandardProject"],
 )
 
 # Create the Project Synthesizer Agent using the defined instructions
@@ -33,10 +33,16 @@ root_agent = LlmAgent(
     description="Coordinates research team to create toddler projects.",
     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction=research_coordinator_instructions.format_instructions(),
-    output_schema=StandardProject,
     output_key="standard_project",
-    tools=[
-       AgentTool(research_sequence),
-       AgentTool(default_temp_project_researcher), 
-    ],
+     generate_content_config=types.GenerateContentConfig(
+        max_output_tokens=1000,
+        temperature=1.0,
+        safety_settings=[
+            types.SafetySetting(
+                category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+            )
+        ],
+    ),
+    sub_agents=[research_sequence, default_temp_project_researcher],
 )
