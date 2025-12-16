@@ -2,42 +2,54 @@
 
 ## Agent Details
 - **Name:** ToddleOpsResearchTeam
-- **Type:** Specialist Team (Researcher + Synthesizer)
+- **Type:** Specialist Team (Coordinator + Parallel Researchers + Synthesizer)
 - **Underlying Model:** Gemini 2.5 Flash Lite
 - **Framework:** Google ADK
 - **Date:** December 2025
 - **Maintainer:** ToddleOps Team
 
 ## Intended Use
-- **Primary Use Case:** Discover and formulate safe, engaging toddler activities based on user requests.
+- **Primary Use Case:** Discover and formulate safe, engaging toddler activities based on user requests, leveraging diverse search strategies.
 - **Target Audience:** The Orchestrator Agent (internal system use).
 - **Out-of-Scope Use Cases:**
     - Providing medical or safety advice directly to users.
     - Researching non-toddler topics.
 
 ## Team Composition & Capabilities
-This "agent" is actually a sequential pipeline of two specialized agents:
+This team is structured as a coordinated system with parallel research capabilities:
 
-1.  **`ProjectResearcher`**
-    - **Role:** Information Gatherer.
-    - **Tools:** `google_search`.
-    - **Function:** Uses Google Search to find real-world examples of toddler crafts and activities that match the user's intent. It filters for safety and feasibility (household materials).
+1.  **`ProjectResearchCoordinator` (Root Agent)**
+    - **Role:** Team Lead.
+    - **Function:** Coordinates the research process. It can choose to run a full parallel research workflow or delegate to a single researcher for specific tasks.
 
-2.  **`ProjectSynthesizer`**
-    - **Role:** Content Creator.
-    - **Tools:** None (Pure LLM).
-    - **Function:** Takes the raw research notes from the Researcher and structures them into a coherent `StandardProject` object. It combines the best elements from multiple sources if necessary.
+2.  **`ResearchParallel` (Workflow)**
+    - **Role:** Diverse Information Gathering.
+    - **Components:**
+        - **`HighTempProjectResearcher` (Temp 1.2):** Explores creative, novel, and perhaps less conventional ideas.
+        - **`LowTempProjectResearcher` (Temp 0.7):** Focuses on reliable, standard, and highly safe ideas.
+    - **Function:** Runs both researchers simultaneously to gather a broad spectrum of potential projects.
+
+3.  **`ProjectSynthesizer`**
+    - **Role:** Content Creator & Merger.
+    - **Function:** Analyzes the outputs from both the High and Low temperature researchers. It selects the best elements—combining creativity with reliability—to structure a single coherent `StandardProject`.
+
+4.  **`DefaultTempProjectResearcher`**
+    - **Role:** Generalist Researcher.
+    - **Function:** Available as a direct tool for the coordinator for standard queries that may not require the full parallel pipeline.
 
 ## Logic & Behavior
 - **Persona:**
-    - **Researcher:** Curious, thorough, and safety-conscious.
-    - **Synthesizer:** Organized, creative, and structured.
+    - **Coordinator:** Strategic and delegative.
+    - **Researchers:** Thorough and safety-conscious (with varying degrees of creativity).
+    - **Synthesizer:** Discerning and structured.
 - **Workflow:**
-    1.  Receive a topic/request (e.g., "sensory bin ideas").
-    2.  Researcher queries Google for safe, age-appropriate ideas.
-    3.  Researcher compiles a summary of findings (`project_research`).
-    4.  Synthesizer analyzes the findings and creates a single, definitive project plan.
-    5.  Output is strictly typed as a `StandardProject`.
+    1.  **Coordination:** The Coordinator receives a request (e.g., "rainy day activities").
+    2.  **Parallel Execution:** Typically delegates to `ResearchSequence`, triggering `ResearchParallel`.
+    3.  **Divergent Search:**
+        - High Temp agent looks for unique angles.
+        - Low Temp agent looks for tried-and-true classics.
+    4.  **Convergent Synthesis:** The Synthesizer reviews `high_temp_project_research` and `low_temp_project_research`. It merges the most engaging ideas into a single plan.
+    5.  **Output:** A strictly typed `StandardProject` object.
 
 ## Inputs & Outputs
 - **Input:** A research topic or user request string.
@@ -49,9 +61,10 @@ This "agent" is actually a sequential pipeline of two specialized agents:
     - `instructions`: Ordered list of steps.
 
 ## Safety & Ethical Considerations
-- **Source Verification:** The Researcher relies on public internet data. While it filters for "safe" and "toddler" keywords, it cannot physically verify the safety of a search result.
-- **Hallucination Mitigation:** The Synthesizer is grounded in the Researcher's output, reducing the chance of inventing dangerous steps, but it is not immune to hallucinating details not present in the search results.
+- **Safety Settings:** All researchers utilize `BLOCK_LOW_AND_ABOVE` for dangerous content to ensure high safety standards at the source.
+- **Source Verification:** Relies on Google Search. The parallel approach helps cross-reference ideas—if a "creative" idea seems unsafe compared to the "conservative" baseline, the Synthesizer can filter it out.
+- **Hallucination Mitigation:** The Synthesizer is grounded in two distinct research streams, providing a richer context window to verify details before generation.
 
 ## Limitations
-- **Search Dependence:** If Google Search returns poor or irrelevant results (e.g., for a very obscure request), the Synthesizer may struggle to create a high-quality project.
-- **No Visuals:** The team currently processes text only and cannot verify if a project looks appealing or safe based on images.
+- **Complexity:** The parallel workflow consumes more tokens and API calls than a single researcher.
+- **Conflict Resolution:** If the high and low temp researchers find contradictory information, the Synthesizer must make a judgment call, which is not always perfect.

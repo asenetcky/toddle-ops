@@ -44,5 +44,6 @@ root_agent = LlmAgent(
             )
         ],
     ),
-    sub_agents=[research_sequence, default_temp_project_researcher],
+    sub_agents=[research_sequence],
+    tools=[AgentTool(default_temp_project_researcher)],
 )
