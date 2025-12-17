@@ -23,63 +23,49 @@ project_researcher_instructions = AgentInstructions(
     incoming_keys=[],
 )
 
+
 # Create the Project Researcher Agents using the defined instructions
-low_temp_project_researcher = LlmAgent(
-    name="LowTempProjectResearcher",
-    description="Researches safe crafts and projects for toddlers using common household materials.",
-    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
-    instruction=project_researcher_instructions.format_instructions(),
-    tools=[google_search],
-    output_key="low_temp_project_research",
-    generate_content_config=types.GenerateContentConfig(
-        max_output_tokens=1500,
-        temperature=0.7,
-        safety_settings=[
-            types.SafetySetting(
-                category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-            )
-        ],
-    ),
-)
+def get_low_temp_project_researcher():
+    return LlmAgent(
+        name="LowTempProjectResearcher",
+        description="Researches safe crafts and projects for toddlers using common household materials.",
+        model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+        instruction=project_researcher_instructions.format_instructions(),
+        tools=[google_search],
+        output_key="low_temp_project_research",
+        generate_content_config=types.GenerateContentConfig(
+            max_output_tokens=1500,
+            temperature=0.7,
+            safety_settings=[
+                types.SafetySetting(
+                    category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                    threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+                )
+            ],
+        ),
+    )
 
-default_temp_project_researcher = LlmAgent(
-    name="DefaultTempProjectResearcher",
-    description="Researches safe crafts and projects for toddlers using common household materials.",
-    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
-    instruction=project_researcher_instructions.format_instructions(),
-    tools=[google_search],
-    output_key="default_temp_project_research",
-    generate_content_config=types.GenerateContentConfig(
-        max_output_tokens=1500,
-        temperature=1.0,
-        safety_settings=[
-            types.SafetySetting(
-                category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-            )
-        ],
-    ),
-)
 
-high_temp_project_researcher = LlmAgent(
-    name="HighTempProjectResearcher",
-    description="Researches safe crafts and projects for toddlers using common household materials.",
-    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
-    instruction=project_researcher_instructions.format_instructions(),
-    tools=[google_search],
-    output_key="high_temp_project_research",
-    generate_content_config=types.GenerateContentConfig(
-        max_output_tokens=1500,
-        temperature=1.2,
-        safety_settings=[
-            types.SafetySetting(
-                category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-            )
-        ],
-    ),
-)
+def get_high_temp_project_researcher():
+    return LlmAgent(
+        name="HighTempProjectResearcher",
+        description="Researches safe crafts and projects for toddlers using common household materials.",
+        model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+        instruction=project_researcher_instructions.format_instructions(),
+        tools=[google_search],
+        output_key="high_temp_project_research",
+        generate_content_config=types.GenerateContentConfig(
+            max_output_tokens=1500,
+            temperature=1.2,
+            safety_settings=[
+                types.SafetySetting(
+                    category=types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                    threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+                )
+            ],
+        ),
+    )
+
 
 # Define instructions for the Project Synthesizer Agent
 project_synthesizer_instructions = AgentInstructions(
@@ -98,12 +84,14 @@ project_synthesizer_instructions = AgentInstructions(
     incoming_keys=["low_temp_project_research", "high_temp_project_research"],
 )
 
+
 # Create the Project Synthesizer Agent using the defined instructions
-project_synthesizer = LlmAgent(
-    name="ProjectSynthesizer",
-    description="Synthesizes a single toddler project from research output.",
-    model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
-    instruction=project_synthesizer_instructions.format_instructions(),
-    output_schema=StandardProject,
-    output_key="standard_project",
-)
+def get_project_synthesizer():
+    return LlmAgent(
+        name="ProjectSynthesizer",
+        description="Synthesizes a single toddler project from research output.",
+        model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
+        instruction=project_synthesizer_instructions.format_instructions(),
+        output_schema=StandardProject,
+        output_key="standard_project",
+    )
