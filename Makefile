@@ -16,6 +16,8 @@ run:
 ui:
 	uv run streamlit run src/toddle_ops/ui.py
 
+# TODO: consider forcing meory:// for --artifact_service_uri
+# TODO: consider a version of adk web that connects to supabase with --session_service_uri
 adk-web:
 	uv run adk web src/toddle_ops/agents/
 
