@@ -4,8 +4,8 @@ from google.adk.tools import FunctionTool
 from toddle_ops.agents.factory import create_agent
 from toddle_ops.helpers import exit_loop
 from toddle_ops.models.agents import AgentInstructions
+from toddle_ops.models.projects import StandardProject
 from toddle_ops.models.reports import StatusReport
-
 
 # Define instructions for the Safety Critic Agent
 safety_critic_instructions = AgentInstructions(
@@ -19,8 +19,9 @@ safety_critic_instructions = AgentInstructions(
         "If the project is not safe, set status in the StatusReport to 'Status.REVISION_NEEDED' and provide specific, actionable suggestions.",
     ],
     constraints=[],
-    incoming_keys=["standard_project"],
+    incoming_keys=[],
 )
+
 
 # Create the Safety Critic Agent using the defined instructions
 def get_safety_critic_agent() -> LlmAgent:
@@ -32,6 +33,7 @@ def get_safety_critic_agent() -> LlmAgent:
         output_schema=StatusReport,
         output_key="safety_report",
     )
+
 
 # Define instructions for the Safety Refiner Agent
 safety_refiner_instructions = AgentInstructions(
@@ -45,8 +47,9 @@ safety_refiner_instructions = AgentInstructions(
         "Ensure the revised project maintains clarity and age-appropriateness.",
     ],
     constraints=[],
-    incoming_keys=["standard_project", "safety_report"],
+    incoming_keys=["safety_report"],
 )
+
 
 # todo: implement tool that consumes ActionReport with logic based around status.
 # Define the Safety Refiner Agent using the defined instructions
@@ -59,6 +62,7 @@ def get_safety_refiner_agent() -> LlmAgent:
         output_key="standard_project",  # It overwrites the project with the new, safer version.
         tools=[FunctionTool(exit_loop)],
     )
+
 
 # Define instructions for the Editorial Agent
 editorial_instructions = AgentInstructions(
@@ -78,6 +82,7 @@ editorial_instructions = AgentInstructions(
     incoming_keys=["standard_project"],
 )
 
+
 def get_editorial_agent() -> LlmAgent:
     """Create an Editorial agent that proofreads projects."""
     return create_agent(
@@ -85,4 +90,5 @@ def get_editorial_agent() -> LlmAgent:
         description="Edits and proofreads toddler projects for clarity and correctness.",
         instruction=editorial_instructions.format_instructions(),
         output_key="standard_project",
+        output_schema=StandardProject,
     )

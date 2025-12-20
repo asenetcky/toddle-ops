@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 
 from toddle_ops.enums import Status
+from toddle_ops.models.projects import StandardProject
 
 
 # Model representing a status report
@@ -10,4 +11,8 @@ class StatusReport(BaseModel):
     message: str | None = Field(
         None,
         description="Optional message providing additional information about the status.",
+    )
+    project: StandardProject | None = Field(
+        None,
+        description="Optional project if applicable.",
     )
