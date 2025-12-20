@@ -19,6 +19,7 @@ research_coordinator_instructions = AgentInstructions(
     incoming_keys=[],
 )
 
+
 def get_research_coordinator_agent() -> LlmAgent:
     """Create the Project Research Coordinator agent."""
     return create_agent(

@@ -1,7 +1,8 @@
 """Unit tests for agent getter functions across all agent modules."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from google.adk.agents import LlmAgent
 
 
@@ -104,56 +105,72 @@ class TestResearchTeamSubAgents:
 
     def test_get_low_temp_researcher_returns_llm_agent(self):
         """get_low_temp_project_researcher should return an LlmAgent."""
-        from toddle_ops.agents.research_team.sub_agent import get_low_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_low_temp_project_researcher,
+        )
 
         agent = get_low_temp_project_researcher()
         assert isinstance(agent, LlmAgent)
 
     def test_low_temp_researcher_has_correct_name(self):
         """Low temp researcher should have the expected name."""
-        from toddle_ops.agents.research_team.sub_agent import get_low_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_low_temp_project_researcher,
+        )
 
         agent = get_low_temp_project_researcher()
         assert agent.name == "LowTempProjectResearcher"
 
     def test_low_temp_researcher_has_low_temperature(self):
         """Low temp researcher should have temperature of 0.7."""
-        from toddle_ops.agents.research_team.sub_agent import get_low_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_low_temp_project_researcher,
+        )
 
         agent = get_low_temp_project_researcher()
         assert agent.generate_content_config.temperature == 0.7
 
     def test_low_temp_researcher_has_correct_output_key(self):
         """Low temp researcher should output to low_temp_project_research."""
-        from toddle_ops.agents.research_team.sub_agent import get_low_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_low_temp_project_researcher,
+        )
 
         agent = get_low_temp_project_researcher()
         assert agent.output_key == "low_temp_project_research"
 
     def test_get_high_temp_researcher_returns_llm_agent(self):
         """get_high_temp_project_researcher should return an LlmAgent."""
-        from toddle_ops.agents.research_team.sub_agent import get_high_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_high_temp_project_researcher,
+        )
 
         agent = get_high_temp_project_researcher()
         assert isinstance(agent, LlmAgent)
 
     def test_high_temp_researcher_has_correct_name(self):
         """High temp researcher should have the expected name."""
-        from toddle_ops.agents.research_team.sub_agent import get_high_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_high_temp_project_researcher,
+        )
 
         agent = get_high_temp_project_researcher()
         assert agent.name == "HighTempProjectResearcher"
 
     def test_high_temp_researcher_has_high_temperature(self):
         """High temp researcher should have temperature of 1.2."""
-        from toddle_ops.agents.research_team.sub_agent import get_high_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_high_temp_project_researcher,
+        )
 
         agent = get_high_temp_project_researcher()
         assert agent.generate_content_config.temperature == 1.2
 
     def test_high_temp_researcher_has_correct_output_key(self):
         """High temp researcher should output to high_temp_project_research."""
-        from toddle_ops.agents.research_team.sub_agent import get_high_temp_project_researcher
+        from toddle_ops.agents.research_team.sub_agent import (
+            get_high_temp_project_researcher,
+        )
 
         agent = get_high_temp_project_researcher()
         assert agent.output_key == "high_temp_project_research"
@@ -161,8 +178,8 @@ class TestResearchTeamSubAgents:
     def test_researchers_have_google_search_tool(self):
         """Both researchers should have google_search in their tools."""
         from toddle_ops.agents.research_team.sub_agent import (
-            get_low_temp_project_researcher,
             get_high_temp_project_researcher,
+            get_low_temp_project_researcher,
         )
 
         low_agent = get_low_temp_project_researcher()
@@ -206,21 +223,27 @@ class TestQualityAssuranceSubAgents:
 
     def test_get_safety_critic_returns_llm_agent(self):
         """get_safety_critic_agent should return an LlmAgent."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_critic_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_critic_agent,
+        )
 
         agent = get_safety_critic_agent()
         assert isinstance(agent, LlmAgent)
 
     def test_safety_critic_has_correct_name(self):
         """Safety critic should have the expected name."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_critic_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_critic_agent,
+        )
 
         agent = get_safety_critic_agent()
         assert agent.name == "SafetyCriticAgent"
 
     def test_safety_critic_has_output_schema(self):
         """Safety critic should have StatusReport output schema."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_critic_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_critic_agent,
+        )
         from toddle_ops.models.reports import StatusReport
 
         agent = get_safety_critic_agent()
@@ -228,56 +251,72 @@ class TestQualityAssuranceSubAgents:
 
     def test_safety_critic_has_correct_output_key(self):
         """Safety critic should output to safety_report."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_critic_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_critic_agent,
+        )
 
         agent = get_safety_critic_agent()
         assert agent.output_key == "safety_report"
 
     def test_get_safety_refiner_returns_llm_agent(self):
         """get_safety_refiner_agent should return an LlmAgent."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_refiner_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_refiner_agent,
+        )
 
         agent = get_safety_refiner_agent()
         assert isinstance(agent, LlmAgent)
 
     def test_safety_refiner_has_correct_name(self):
         """Safety refiner should have the expected name."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_refiner_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_refiner_agent,
+        )
 
         agent = get_safety_refiner_agent()
         assert agent.name == "SafetyRefinerAgent"
 
     def test_safety_refiner_has_correct_output_key(self):
         """Safety refiner should output to standard_project."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_refiner_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_refiner_agent,
+        )
 
         agent = get_safety_refiner_agent()
         assert agent.output_key == "standard_project"
 
     def test_safety_refiner_has_tools(self):
         """Safety refiner should have exit_loop tool."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_safety_refiner_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_safety_refiner_agent,
+        )
 
         agent = get_safety_refiner_agent()
         assert len(agent.tools) > 0
 
     def test_get_editorial_agent_returns_llm_agent(self):
         """get_editorial_agent should return an LlmAgent."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_editorial_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_editorial_agent,
+        )
 
         agent = get_editorial_agent()
         assert isinstance(agent, LlmAgent)
 
     def test_editorial_agent_has_correct_name(self):
         """Editorial agent should have the expected name."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_editorial_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_editorial_agent,
+        )
 
         agent = get_editorial_agent()
         assert agent.name == "EditorialAgent"
 
     def test_editorial_agent_has_correct_output_key(self):
         """Editorial agent should output to standard_project."""
-        from toddle_ops.agents.quality_assurance_team.sub_agent import get_editorial_agent
+        from toddle_ops.agents.quality_assurance_team.sub_agent import (
+            get_editorial_agent,
+        )
 
         agent = get_editorial_agent()
         assert agent.output_key == "standard_project"
@@ -305,8 +344,8 @@ class TestAgentIndependence:
     def test_low_and_high_temp_researchers_are_different(self):
         """Low and high temp researchers should be different agents."""
         from toddle_ops.agents.research_team.sub_agent import (
-            get_low_temp_project_researcher,
             get_high_temp_project_researcher,
+            get_low_temp_project_researcher,
         )
 
         low = get_low_temp_project_researcher()
@@ -314,7 +353,10 @@ class TestAgentIndependence:
 
         assert low.name != high.name
         assert low.output_key != high.output_key
-        assert low.generate_content_config.temperature != high.generate_content_config.temperature
+        assert (
+            low.generate_content_config.temperature
+            != high.generate_content_config.temperature
+        )
 
     def test_safety_critic_and_refiner_are_different(self):
         """Safety critic and refiner should be different agents."""

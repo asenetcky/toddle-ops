@@ -79,7 +79,11 @@ def create_agent(
     # Build generate_content_config if individual params are provided
     # but no full config was passed
     if generate_content_config is None and any(
-        [temperature is not None, max_output_tokens is not None, safety_settings is not None]
+        [
+            temperature is not None,
+            max_output_tokens is not None,
+            safety_settings is not None,
+        ]
     ):
         generate_content_config = types.GenerateContentConfig(
             temperature=temperature,

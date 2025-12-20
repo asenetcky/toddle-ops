@@ -1,14 +1,15 @@
 """Unit tests for the agent factory module."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from google.adk.agents import LlmAgent
 from google.genai import types
 
 from toddle_ops.agents.factory import (
-    create_agent,
     DEFAULT_MODEL,
     DEFAULT_SAFETY_SETTINGS,
+    create_agent,
 )
 
 
